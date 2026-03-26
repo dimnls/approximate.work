@@ -180,8 +180,10 @@
       background: var(--rule);
     }
 
-    .tool-card:hover { background: var(--bg); }
-    .tool-card:hover .tool-arrow { color: var(--accent); transform: translate(2px, -2px); }
+    a.tool-card:hover { background: var(--bg); }
+    a.tool-card:hover .tool-arrow { color: var(--accent); transform: translate(2px, -2px); }
+
+    .tool-card.no-link { cursor: default; }
 
     .tool-name {
       font-family: var(--serif);
@@ -327,7 +329,7 @@
 
       <div class="tools">
 
-        <a class="tool-card" href="#" target="_blank" rel="noopener">
+        <a class="tool-card" href="https://redpen.dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">Red Pen</span>
           <span class="tool-arrow">&#8599;</span>
           <span class="tool-desc">
@@ -342,9 +344,9 @@
           </div>
         </a>
 
-        <a class="tool-card" href="#" target="_blank" rel="noopener">
+        <div class="tool-card no-link">
           <span class="tool-name">Gymcalwabot</span>
-          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-arrow" style="opacity: 0;">&#8599;</span>
           <span class="tool-desc">
             A gym slot watcher that books the class you actually want
             when it opens up — and quietly drops the one you settled for.
@@ -354,9 +356,9 @@
             <span class="tag">apps script</span>
             <span class="tag">google calendar</span>
           </div>
-        </a>
+        </div>
 
-        <a class="tool-card" href="#" target="_blank" rel="noopener">
+        <a class="tool-card" href="https://itsapickle.xyz" target="_blank" rel="noopener">
           <span class="tool-name">It's a Pickle</span>
           <span class="tool-arrow">&#8599;</span>
           <span class="tool-desc">
