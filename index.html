@@ -210,6 +210,15 @@
       grid-row: 2;
     }
 
+    .tool-desc a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .tool-desc a:hover { border-color: var(--accent); }
+
     .tool-meta {
       display: flex;
       gap: 8px;
@@ -351,10 +360,27 @@
           <span class="tool-name">It's a Pickle</span>
           <span class="tool-arrow">&#8599;</span>
           <span class="tool-desc">
-            Details forthcoming. It's a work in progress, much like everything else here.
+            A no-drama decision app. Two people, two options, sliders.
+            Picks the winner based on who cares most — or declares a draw if you're both equally stubborn.
           </span>
           <div class="tool-meta">
-            <span class="tag wip">in progress</span>
+            <span class="tag live">live</span>
+            <span class="tag">decision app</span>
+          </div>
+        </a>
+
+        <a class="tool-card" href="https://esn.nostus.com" target="_blank" rel="noopener">
+          <span class="tool-name">Nostus &times; ESN Partner Portal</span>
+          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-desc">
+            A referral tracking portal for ESN Greece sections partnered with
+            <a href="https://nostus.com" target="_blank" rel="noopener" onclick="event.stopPropagation()">Nostus</a>
+            — the mid-term accommodation platform for international students in Greece.
+          </span>
+          <div class="tool-meta">
+            <span class="tag live">live</span>
+            <span class="tag">partnerships</span>
+            <span class="tag">nostus</span>
           </div>
         </a>
 
@@ -365,15 +391,15 @@
       <div class="section-head"><h2>about</h2></div>
 
       <p class="about-text">
-        This is <a href="https://www.linkedin.com/in/dimitriosterzoudis/" target="_blank" rel="noopener">Dimitrios</a> — a PM by trade,
+        This is <a href="https://dimitrios.im" target="_blank" rel="noopener">Dimitrios</a> — a PM by trade,
         a tinkerer by habit. These tools exist because they scratched an itch,
         taught me something, or both. None of them are particularly serious.
         Most of them work.
       </p>
 
       <p class="about-text">
-        Built with a browser, a text editor, and an unreasonable amount of
-        AI-assisted iteration. Hosted on GitHub Pages because free is the right price.
+        Built with an unreasonable amount of AI-assisted iteration.
+        If it works, we're both taking credit.
       </p>
     </div>
 
@@ -381,7 +407,7 @@
       <span class="footer-note">approximate.work &mdash; good enough is <span>good enough</span>.</span>
       <a
         class="contact-link"
-        href="mailto:hi@approximate.work?subject=hello from approximate.work"
+        href="mailto:hi@dimitrios.im?subject=hello from approximate.work"
       >get in touch</a>
     </footer>
 
