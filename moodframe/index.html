@@ -175,7 +175,7 @@
 <script>
 const CLIENT_ID = 'c8dfa1033d144e50aa354ff7afef0fd5';
 const REDIRECT_URI = 'https://approximate.work/moodframe/index.html';
-const SCOPES = 'user-read-private playlist-modify-private';
+const SCOPES = 'user-read-private';
 
 // ── IMAGE DATA (Picsum seeds chosen for Kobayashi quadrant feel) ──────────────
 const R1 = [
@@ -184,55 +184,55 @@ const R1 = [
     desc:'A quiet kind of happiness. Gentle, present, unhurried. The feeling of something small that makes you smile.',
     features:{ valence:0.78, energy:0.32, danceability:0.45, acousticness:0.82, tempo:88 },
     genres:['folk','singer-songwriter','indie-folk'],
-    targets:{ target_valence:0.78, target_energy:0.32, target_danceability:0.45, target_acousticness:0.82, target_tempo:88, min_valence:0.55 }
+    searchTerms:['folk acoustic gentle', 'indie folk warm', 'singer songwriter tender']
   },
   {
     seed:'1067', quadrant:'cool-soft', mood:'lucid drift',
     desc:'Somewhere between waking and dreaming. A floating feeling. Thoughts that dissolve before you catch them.',
     features:{ valence:0.42, energy:0.35, danceability:0.52, acousticness:0.45, tempo:92 },
     genres:['dream-pop','ambient','indie'],
-    targets:{ target_valence:0.42, target_energy:0.35, target_danceability:0.52, target_acousticness:0.45, target_tempo:92 }
+    searchTerms:['dream pop floating', 'ambient electronic drift', 'indie dreamy hazy']
   },
   {
     seed:'1043', quadrant:'warm-hard', mood:'restless drive',
     desc:'Energy with direction. The feeling before something begins. Charged, purposeful, a little impatient.',
     features:{ valence:0.65, energy:0.82, danceability:0.70, acousticness:0.12, tempo:128 },
     genres:['indie','alternative','rock'],
-    targets:{ target_valence:0.65, target_energy:0.82, target_danceability:0.70, target_acousticness:0.12, target_tempo:128, min_energy:0.65 }
+    searchTerms:['indie rock energetic drive', 'alternative upbeat charged', 'rock powerful momentum']
   },
   {
     seed:'1040', quadrant:'cool-hard', mood:'still weight',
     desc:"Heavy without being sad. Serious. The mood when you're processing something real and need music that doesn't flinch.",
     features:{ valence:0.22, energy:0.55, danceability:0.38, acousticness:0.35, tempo:105 },
     genres:['post-rock','alternative','indie'],
-    targets:{ target_valence:0.22, target_energy:0.55, target_danceability:0.38, target_acousticness:0.35, target_tempo:105, max_valence:0.42 }
+    searchTerms:['post rock heavy serious', 'alternative dark intense', 'indie melancholic weight']
   }
 ];
 
 const R2 = {
   'warm-soft':[
-    { seed:'1015', mood:'golden hour ease', desc:'The specific contentment of late afternoon light. Nothing needs to happen. This is enough.', features:{valence:0.88,energy:0.28,danceability:0.42,acousticness:0.88,tempo:76}, genres:['folk','acoustic','singer-songwriter'], targets:{target_valence:0.88,target_energy:0.28,target_acousticness:0.88,target_tempo:76,min_valence:0.72} },
-    { seed:'1016', mood:'soft nostalgia', desc:'Missing something good. Bittersweet in the best way. A happy memory with a gentle ache.', features:{valence:0.62,energy:0.33,danceability:0.46,acousticness:0.76,tempo:84}, genres:['folk','indie-folk','singer-songwriter'], targets:{target_valence:0.62,target_energy:0.33,target_acousticness:0.76,target_tempo:84} },
-    { seed:'1018', mood:'cozy interiority', desc:'Inside, warm, unhurried. Music for staying in. A Sunday that stretches gently.', features:{valence:0.70,energy:0.22,danceability:0.38,acousticness:0.91,tempo:70}, genres:['acoustic','singer-songwriter','folk'], targets:{target_valence:0.70,target_energy:0.22,target_acousticness:0.91,target_tempo:70} },
-    { seed:'1020', mood:'gentle wonder', desc:'Quiet amazement. The feeling of something small being unexpectedly beautiful.', features:{valence:0.80,energy:0.30,danceability:0.44,acousticness:0.80,tempo:80}, genres:['indie-folk','folk','acoustic'], targets:{target_valence:0.80,target_energy:0.30,target_acousticness:0.80,target_tempo:80} }
+    { seed:'1015', mood:'golden hour ease', desc:'The specific contentment of late afternoon light. Nothing needs to happen. This is enough.', features:{valence:0.88,energy:0.28,danceability:0.42,acousticness:0.88,tempo:76}, searchTerms:['folk acoustic golden peaceful', 'singer songwriter gentle warm'] },
+    { seed:'1016', mood:'soft nostalgia', desc:'Missing something good. Bittersweet in the best way. A happy memory with a gentle ache.', features:{valence:0.62,energy:0.33,danceability:0.46,acousticness:0.76,tempo:84}, searchTerms:['folk nostalgic bittersweet', 'indie folk memory soft'] },
+    { seed:'1018', mood:'cozy interiority', desc:'Inside, warm, unhurried. Music for staying in. A Sunday that stretches gently.', features:{valence:0.70,energy:0.22,danceability:0.38,acousticness:0.91,tempo:70}, searchTerms:['acoustic cozy quiet sunday', 'folk intimate slow warm'] },
+    { seed:'1020', mood:'gentle wonder', desc:'Quiet amazement. The feeling of something small being unexpectedly beautiful.', features:{valence:0.80,energy:0.30,danceability:0.44,acousticness:0.80,tempo:80}, searchTerms:['indie folk wonder delicate', 'acoustic beautiful gentle'] }
   ],
   'cool-soft':[
-    { seed:'1055', mood:'rainy introspection', desc:'The inside of your own head. Rain on windows. Thoughts that feel meaningful without urgency.', features:{valence:0.35,energy:0.28,danceability:0.42,acousticness:0.65,tempo:80}, genres:['indie','singer-songwriter','alternative'], targets:{target_valence:0.35,target_energy:0.28,target_acousticness:0.65,target_tempo:80,max_valence:0.55} },
-    { seed:'1060', mood:'ambient detachment', desc:'Present but floating. Observing rather than feeling. Good music for transitions.', features:{valence:0.42,energy:0.33,danceability:0.50,acousticness:0.48,tempo:90}, genres:['ambient','electronic','dream-pop'], targets:{target_valence:0.42,target_energy:0.33,target_acousticness:0.48,target_tempo:90} },
-    { seed:'1062', mood:'quiet longing', desc:"Wanting something you can't quite name. Beautiful and a little sad.", features:{valence:0.32,energy:0.30,danceability:0.44,acousticness:0.62,tempo:86}, genres:['dream-pop','indie','singer-songwriter'], targets:{target_valence:0.32,target_energy:0.30,target_acousticness:0.62,target_tempo:86,max_valence:0.50} },
-    { seed:'1064', mood:'vast quiet', desc:'Expansive and still. The feeling of being small in a beautiful way.', features:{valence:0.48,energy:0.24,danceability:0.36,acousticness:0.74,tempo:74}, genres:['folk','ambient','indie-folk'], targets:{target_valence:0.48,target_energy:0.24,target_acousticness:0.74,target_tempo:74} }
+    { seed:'1055', mood:'rainy introspection', desc:'The inside of your own head. Rain on windows. Thoughts that feel meaningful without urgency.', features:{valence:0.35,energy:0.28,danceability:0.42,acousticness:0.65,tempo:80}, searchTerms:['indie rainy introspective slow', 'singer songwriter thoughtful quiet'] },
+    { seed:'1060', mood:'ambient detachment', desc:'Present but floating. Observing rather than feeling. Good music for transitions.', features:{valence:0.42,energy:0.33,danceability:0.50,acousticness:0.48,tempo:90}, searchTerms:['ambient electronic floating detached', 'dream pop hazy transitional'] },
+    { seed:'1062', mood:'quiet longing', desc:"Wanting something you can't quite name. Beautiful and a little sad.", features:{valence:0.32,energy:0.30,danceability:0.44,acousticness:0.62,tempo:86}, searchTerms:['dream pop longing sad beautiful', 'indie melancholic yearning'] },
+    { seed:'1064', mood:'vast quiet', desc:'Expansive and still. The feeling of being small in a beautiful way.', features:{valence:0.48,energy:0.24,danceability:0.36,acousticness:0.74,tempo:74}, searchTerms:['folk ambient vast quiet stillness', 'acoustic expansive slow'] }
   ],
   'warm-hard':[
-    { seed:'1032', mood:'euphoric momentum', desc:'Everything clicking. Moving fast and feeling good. Peak of something.', features:{valence:0.88,energy:0.90,danceability:0.80,acousticness:0.07,tempo:138}, genres:['pop','dance','indie-pop'], targets:{target_valence:0.88,target_energy:0.90,target_danceability:0.80,target_tempo:138,min_energy:0.78} },
-    { seed:'1035', mood:'focused intensity', desc:"In the zone. Locked in. Productive energy that doesn't need validation.", features:{valence:0.58,energy:0.84,danceability:0.65,acousticness:0.10,tempo:124}, genres:['electronic','work-out','alternative'], targets:{target_valence:0.58,target_energy:0.84,target_danceability:0.65,target_tempo:124,min_energy:0.70} },
-    { seed:'1036', mood:'defiant joy', desc:'Happy in a way that has some fire to it. Dancing because you mean it.', features:{valence:0.84,energy:0.87,danceability:0.88,acousticness:0.05,tempo:132}, genres:['dance','pop','indie-pop'], targets:{target_valence:0.84,target_energy:0.87,target_danceability:0.88,target_tempo:132,min_valence:0.70} },
-    { seed:'1039', mood:'charged anticipation', desc:'Something is about to happen. Tense in a good way. Threshold energy.', features:{valence:0.65,energy:0.78,danceability:0.65,acousticness:0.10,tempo:118}, genres:['indie','alternative','electronic'], targets:{target_valence:0.65,target_energy:0.78,target_danceability:0.65,target_tempo:118,min_energy:0.62} }
+    { seed:'1032', mood:'euphoric momentum', desc:'Everything clicking. Moving fast and feeling good. Peak of something.', features:{valence:0.88,energy:0.90,danceability:0.80,acousticness:0.07,tempo:138}, searchTerms:['pop dance euphoric upbeat fast', 'indie pop energetic happy'] },
+    { seed:'1035', mood:'focused intensity', desc:"In the zone. Locked in. Productive energy that doesn't need validation.", features:{valence:0.58,energy:0.84,danceability:0.65,acousticness:0.10,tempo:124}, searchTerms:['electronic focused intense workout', 'alternative driving productive'] },
+    { seed:'1036', mood:'defiant joy', desc:'Happy in a way that has some fire to it. Dancing because you mean it.', features:{valence:0.84,energy:0.87,danceability:0.88,acousticness:0.05,tempo:132}, searchTerms:['dance pop defiant joyful powerful', 'indie pop upbeat dancing'] },
+    { seed:'1039', mood:'charged anticipation', desc:'Something is about to happen. Tense in a good way. Threshold energy.', features:{valence:0.65,energy:0.78,danceability:0.65,acousticness:0.10,tempo:118}, searchTerms:['indie alternative tension anticipation build', 'electronic charged cinematic'] }
   ],
   'cool-hard':[
-    { seed:'1080', mood:'cathartic grief', desc:"Not wallowing — processing. Heavy music for heavy feelings. Honest and unsparing.", features:{valence:0.18,energy:0.58,danceability:0.30,acousticness:0.42,tempo:96}, genres:['alternative','post-rock','indie'], targets:{target_valence:0.18,target_energy:0.58,target_acousticness:0.42,target_tempo:96,max_valence:0.35} },
-    { seed:'1084', mood:'controlled tension', desc:'Tightly coiled. Something held back. Discipline with something dark underneath.', features:{valence:0.28,energy:0.64,danceability:0.44,acousticness:0.25,tempo:112}, genres:['alternative','rock','post-punk'], targets:{target_valence:0.28,target_energy:0.64,target_acousticness:0.25,target_tempo:112,max_valence:0.42} },
-    { seed:'1086', mood:'numb detachment', desc:"Feeling far away from things. Not sad, not happy. Music for when you've gone quiet inside.", features:{valence:0.25,energy:0.44,danceability:0.38,acousticness:0.55,tempo:92}, genres:['post-rock','ambient','alternative'], targets:{target_valence:0.25,target_energy:0.44,target_acousticness:0.55,target_tempo:92,max_valence:0.40} },
-    { seed:'1090', mood:'resolute solitude', desc:"Alone and okay with it. Self-contained. Music that doesn't demand anything.", features:{valence:0.32,energy:0.46,danceability:0.34,acousticness:0.62,tempo:98}, genres:['indie','singer-songwriter','alternative'], targets:{target_valence:0.32,target_energy:0.46,target_acousticness:0.62,target_tempo:98,max_valence:0.48} }
+    { seed:'1080', mood:'cathartic grief', desc:"Not wallowing — processing. Heavy music for heavy feelings. Honest and unsparing.", features:{valence:0.18,energy:0.58,danceability:0.30,acousticness:0.42,tempo:96}, searchTerms:['alternative cathartic grief heavy', 'post rock emotional release'] },
+    { seed:'1084', mood:'controlled tension', desc:'Tightly coiled. Something held back. Discipline with something dark underneath.', features:{valence:0.28,energy:0.64,danceability:0.44,acousticness:0.25,tempo:112}, searchTerms:['post punk tension dark controlled', 'alternative rock coiled intense'] },
+    { seed:'1086', mood:'numb detachment', desc:"Feeling far away from things. Not sad, not happy. Music for when you've gone quiet inside.", features:{valence:0.25,energy:0.44,danceability:0.38,acousticness:0.55,tempo:92}, searchTerms:['post rock ambient numb detached', 'alternative quiet dissociated'] },
+    { seed:'1090', mood:'resolute solitude', desc:"Alone and okay with it. Self-contained. Music that doesn't demand anything.", features:{valence:0.32,energy:0.46,danceability:0.34,acousticness:0.62,tempo:98}, searchTerms:['indie folk solitude alone quiet', 'singer songwriter self contained'] }
   ]
 };
 
@@ -305,8 +305,8 @@ function renderAuthBlock() {
     el.innerHTML = `
       <div class="auth-notice">
         <strong>Connect Spotify for real playlists</strong>
-        Your mood's audio targets will be sent directly to Spotify's recommendations API.
-        No simulation — actual tracks matched to valence, energy, tempo and more.
+        Your mood's audio character will be used to search Spotify for matching tracks.
+        No simulation — actual tracks pulled from Spotify's catalogue.
         <br><br>
         <em>Before connecting: add <code>${REDIRECT_URI}</code> as a Redirect URI in your Spotify Developer Dashboard.</em>
         <br>
@@ -371,7 +371,6 @@ function showResult(d, imgUrl) {
   document.getElementById('result-desc').textContent = d.desc;
   document.getElementById('result-img').src = imgUrl;
 
-  // Features
   const feats = document.getElementById('features');
   feats.innerHTML = '';
   const labels = { valence:'positivity', energy:'energy', danceability:'rhythm', acousticness:'acoustic', tempo:'tempo' };
@@ -392,58 +391,71 @@ function showResult(d, imgUrl) {
   fetchPlaylist(d);
 }
 
-// ── SPOTIFY RECOMMENDATIONS ───────────────────────────────────────────────────
+// ── SPOTIFY SEARCH-BASED PLAYLIST ────────────────────────────────────────────
 async function fetchPlaylist(d) {
   const el = document.getElementById('playlist');
 
   if (!token) {
     el.innerHTML = `<div class="no-spotify">
       <strong>Spotify not connected</strong>
-      Connect on the start screen to generate a real playlist matched to this mood's audio targets.
+      Connect on the start screen to generate a real playlist matched to this mood.
       <br><br>
       <span style="font-size:0.6rem;color:#444">
-        Target: valence ${Math.round(d.features.valence*100)} · energy ${Math.round(d.features.energy*100)} · acousticness ${Math.round(d.features.acousticness*100)} · ${Math.round(d.features.tempo)} bpm
+        Mood profile: valence ${Math.round(d.features.valence*100)} · energy ${Math.round(d.features.energy*100)} · acousticness ${Math.round(d.features.acousticness*100)} · ${Math.round(d.features.tempo)} bpm
       </span></div>`;
     return;
   }
 
-  el.innerHTML = `<div class="playlist-loading">fetching tracks from spotify...</div>`;
+  el.innerHTML = `<div class="playlist-loading">searching spotify...</div>`;
 
   try {
-    const params = new URLSearchParams({
-      limit: 8,
-      seed_genres: d.genres.slice(0,3).join(','),
-      ...d.targets
+    // Run 2 searches in parallel using different search terms from the mood
+    const terms = d.searchTerms || [d.mood];
+    const queries = terms.slice(0, 2).map(term => {
+      const params = new URLSearchParams({ q: term, type: 'track', limit: 10, market: 'US' });
+      return fetch(`https://api.spotify.com/v1/search?${params}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(r => r.json());
     });
 
-    const res = await fetch(`https://api.spotify.com/v1/recommendations?${params}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const results = await Promise.all(queries);
 
-    if (res.status === 401) { token = null; el.innerHTML = `<div class="no-spotify"><strong>Session expired</strong> — reconnect Spotify from the start screen.</div>`; return; }
-    if (!res.ok) throw new Error(`Spotify ${res.status}`);
+    // Flatten, deduplicate by track id, filter out tracks without images
+    const seen = new Set();
+    let tracks = results
+      .flatMap(r => r?.tracks?.items || [])
+      .filter(t => {
+        if (seen.has(t.id) || !t.album?.images?.length) return false;
+        seen.add(t.id);
+        return true;
+      });
 
-    const { tracks } = await res.json();
-    if (!tracks?.length) { el.innerHTML = `<div class="no-spotify"><strong>No tracks found</strong> — try refining your mood.</div>`; return; }
+    // Sort by popularity descending, take top 8
+    tracks = tracks.sort((a, b) => b.popularity - a.popularity).slice(0, 8);
+
+    if (!tracks.length) {
+      el.innerHTML = `<div class="no-spotify"><strong>No tracks found</strong> — try refining your mood.</div>`;
+      return;
+    }
 
     el.innerHTML = '';
     const list = document.createElement('div');
     list.className = 'track-list';
     tracks.forEach((t, i) => {
-      const thumb = t.album.images?.[2]?.url || '';
-      const mins = Math.floor(t.duration_ms/60000);
-      const secs = String(Math.floor((t.duration_ms%60000)/1000)).padStart(2,'0');
+      const thumb = t.album.images?.[2]?.url || t.album.images?.[0]?.url || '';
+      const mins = Math.floor(t.duration_ms / 60000);
+      const secs = String(Math.floor((t.duration_ms % 60000) / 1000)).padStart(2, '0');
       const a = document.createElement('a');
       a.className = 'track-row';
       a.href = t.external_urls.spotify;
       a.target = '_blank';
       a.rel = 'noopener';
       a.innerHTML = `
-        <span class="track-num">0${i+1}</span>
-        ${thumb?`<img class="track-thumb" src="${thumb}" alt="">` : ''}
+        <span class="track-num">0${i + 1}</span>
+        ${thumb ? `<img class="track-thumb" src="${thumb}" alt="">` : ''}
         <div class="track-info">
           <div class="track-name">${t.name}</div>
-          <div class="track-artist">${t.artists.map(a=>a.name).join(', ')}</div>
+          <div class="track-artist">${t.artists.map(a => a.name).join(', ')}</div>
         </div>
         <span class="track-dur">${mins}:${secs}</span>`;
       list.appendChild(a);
@@ -459,8 +471,13 @@ async function fetchPlaylist(d) {
     el.appendChild(btn);
 
   } catch(e) {
-    console.error(e);
-    el.innerHTML = `<div class="no-spotify"><strong>Error</strong> — ${e.message}</div>`;
+    if (e.status === 401 || (e.message && e.message.includes('401'))) {
+      token = null;
+      el.innerHTML = `<div class="no-spotify"><strong>Session expired</strong> — reconnect Spotify from the start screen.</div>`;
+    } else {
+      console.error(e);
+      el.innerHTML = `<div class="no-spotify"><strong>Error</strong> — ${e.message}</div>`;
+    }
   }
 }
 
