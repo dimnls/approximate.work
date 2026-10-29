@@ -256,6 +256,94 @@
       .tag.live { background: #0A2E28; color: #0DD8B8; }
     }
 
+    /* APPS */
+    .apps-intro {
+      font-size: 12px;
+      color: var(--ink2);
+      max-width: 460px;
+      margin: -8px 0 24px;
+    }
+
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .app-card {
+      background: var(--bg2);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 24px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.15s, transform 0.2s;
+    }
+
+    .app-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .app-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .app-icon {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+      border-radius: 22.5%;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 6px 18px -6px rgba(15,26,23,0.35);
+      display: block;
+    }
+
+    .app-name {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+
+    .app-sub {
+      font-size: 11px;
+      color: var(--ink3);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .app-desc {
+      font-size: 12px;
+      color: var(--ink2);
+      line-height: 1.7;
+    }
+
+    .app-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11.5px;
+      color: var(--ink2);
+    }
+
+    .app-features li::before {
+      content: '→ ';
+      color: var(--accent);
+    }
+
+    .app-card .tool-meta { margin-top: auto; padding-top: 4px; }
+
+    @media (max-width: 600px) {
+      .apps { grid-template-columns: 1fr; }
+    }
+
     /* ABOUT */
     .about-text {
       font-size: 13px;
@@ -319,6 +407,7 @@
     <nav>
       <a href="/" class="site-name">approximate<span>.work</span></a>
       <ul class="nav-links">
+        <li><a href="#apps">apps</a></li>
         <li><a href="#tools">tools</a></li>
         <li><a href="#about">about</a></li>
       </ul>
@@ -331,6 +420,58 @@
         learn something, or just because it seemed like a reasonable idea at the time. And that time was probably 2am.
       </p>
     </section>
+
+    <div id="apps">
+      <div class="section-head"><h2>ios apps</h2></div>
+      <p class="apps-intro">Native iPhone apps, built with Claude Code to replace something I was paying for, or squinting at.</p>
+
+      <div class="apps">
+
+        <article class="app-card">
+          <div class="app-head">
+            <img class="app-icon" src="/icons/podnap.svg" alt="Podnap app icon" width="64" height="64" />
+            <div>
+              <div class="app-name">Podnap</div>
+              <div class="app-sub">Shuffle podcasts to sleep</div>
+            </div>
+          </div>
+          <p class="app-desc">Pick a show, tap play, drift off. Podnap pulls the full RSS back catalogue and plays random episodes back to back until the sleep timer fades it out. Replaced a paid app.</p>
+          <ul class="app-features">
+            <li>Sleep timer that fades, not cuts</li>
+            <li>Search Apple Podcasts or paste any feed</li>
+            <li>&ldquo;Shuffle Podnap&rdquo; with Siri</li>
+          </ul>
+          <div class="tool-meta">
+            <span class="tag">ios</span>
+            <span class="tag">podcasts</span>
+            <span class="tag">no accounts</span>
+          </div>
+        </article>
+
+        <article class="app-card">
+          <div class="app-head">
+            <img class="app-icon" src="/icons/dense.svg" alt="Dense app icon" width="64" height="64" />
+            <div>
+              <div class="app-name">Dense</div>
+              <div class="app-sub">Calendar &amp; Reminders widgets that fit more</div>
+            </div>
+          </div>
+          <p class="app-desc">The native widgets stop at three. Dense doesn't. Tune theme, font, size and spacing per widget with a live preview, and fit as much as you can actually read.</p>
+          <ul class="app-features">
+            <li>Dense Calendar: upcoming events agenda</li>
+            <li>Dense Reminders: tick off from the widget</li>
+            <li>Small, medium, large + Lock Screen</li>
+          </ul>
+          <div class="tool-meta">
+            <span class="tag">ios</span>
+            <span class="tag">widgets</span>
+            <span class="tag">calendar</span>
+            <span class="tag">reminders</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
 
     <div id="tools">
       <div class="section-head"><h2>tools</h2></div>
@@ -379,42 +520,6 @@
             <span class="tag">decision app</span>
           </div>
         </a>
-
-        <div class="tool-card no-link">
-          <span class="tool-name">Podnap</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
-          <div class="tool-desc">A podcast player for falling asleep. Search any show via Apple Podcasts, it pulls the full RSS back catalogue, then plays a random episode — and another, and another — until the sleep timer quietly calls it a night. Replaced a paid app.</div>
-          <div class="tool-meta">
-            <span class="tag live">live</span>
-            <span class="tag">ios</span>
-            <span class="tag">podcasts</span>
-            <span class="tag">rss</span>
-          </div>
-        </div>
-
-        <div class="tool-card no-link">
-          <span class="tool-name">DenseReminders</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
-          <div class="tool-desc">A home screen widget for Reminders that doesn't stop at three. Tune the text size and spacing to fit as many as you can actually read. The native widget's generosity, minus the whitespace.</div>
-          <div class="tool-meta">
-            <span class="tag live">live</span>
-            <span class="tag">ios</span>
-            <span class="tag">widget</span>
-            <span class="tag">reminders</span>
-          </div>
-        </div>
-
-        <div class="tool-card no-link">
-          <span class="tool-name">DenseCalendar</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
-          <div class="tool-desc">DenseReminders' sibling, for Apple Calendar. A small widget that fits a lot more of your upcoming events than the native one bothers to show. Same idea: more schedule, less padding.</div>
-          <div class="tool-meta">
-            <span class="tag live">live</span>
-            <span class="tag">ios</span>
-            <span class="tag">widget</span>
-            <span class="tag">calendar</span>
-          </div>
-        </div>
 
         <div class="tool-card" onclick="window.open('https://esn.nostus.com','_blank')">
           <span class="tool-name">Nostus &times; ESN Partner Portal</span>
