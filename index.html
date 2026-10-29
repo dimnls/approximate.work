@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#F5F7F6" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0C1512" media="(prefers-color-scheme: dark)" />
   <title>approximate.work</title>
   <meta name="description" content="A small collection of things built approximately." />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -19,10 +22,12 @@
       --bg2:     #EAEEEC;
       --ink:     #0F1A17;
       --ink2:    #3D5248;
-      --ink3:    #7A9189;
+      --ink3:    #566D65;
       --rule:    #C4D0CB;
       --accent:  #0ABFA3;
       --accent2: #087D6A;
+      --accent-text:    #087D6A; /* accent for small text: 4.7:1 on --bg */
+      --accent-display: #0A9A83; /* accent for large display text: 3.3:1 */
       --tag-bg:  #DDE6E3;
       --mono:    'Fragment Mono', monospace;
       --display: 'Syne', sans-serif;
@@ -34,21 +39,23 @@
         --bg2:     #111D19;
         --ink:     #E0EDE9;
         --ink2:    #8AADA5;
-        --ink3:    #4D706A;
+        --ink3:    #6F918A;
         --rule:    #1E3330;
         --accent:  #0DD8B8;
         --accent2: #0ABFA3;
+        --accent-text:    #0DD8B8;
+        --accent-display: #0DD8B8;
         --tag-bg:  #152420;
       }
     }
 
-    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
     body {
       background: var(--bg);
       color: var(--ink);
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 0.875rem;
       line-height: 1.7;
       padding: 0 24px;
       min-height: 100vh;
@@ -62,24 +69,23 @@
 
     /* NAV */
     nav {
-      padding: 40px 0 0;
+      padding: 32px 0 12px;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       border-bottom: 1px solid var(--rule);
-      padding-bottom: 20px;
     }
 
     .site-name {
       font-family: var(--display);
       font-weight: 800;
-      font-size: 17px;
+      font-size: 1.0625rem;
       letter-spacing: -0.03em;
       color: var(--ink);
       text-decoration: none;
     }
 
-    .site-name span { color: var(--accent); }
+    .site-name span { color: var(--accent-text); }
 
     .nav-links {
       display: flex;
@@ -88,15 +94,15 @@
     }
 
     .nav-links a {
+      display: inline-block;
+      padding: 0.5rem 0;
       color: var(--ink3);
       text-decoration: none;
-      font-size: 11px;
+      font-size: 0.75rem;
       letter-spacing: 0.08em;
       text-transform: lowercase;
       transition: color 0.15s;
     }
-
-    .nav-links a:hover { color: var(--accent); }
 
     /* HERO */
     .hero {
@@ -105,17 +111,17 @@
     }
 
     .hero-label {
-      font-size: 10px;
+      font-size: 0.6875rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
       margin-bottom: 28px;
     }
 
     .hero h1 {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(34px, 6vw, 50px);
+      font-size: clamp(2.125rem, 6vw, 3.125rem);
       line-height: 1.05;
       letter-spacing: -0.04em;
       color: var(--ink);
@@ -124,11 +130,11 @@
 
     .hero h1 em {
       font-style: normal;
-      color: var(--accent);
+      color: var(--accent-display);
     }
 
     .hero-desc {
-      font-size: 13px;
+      font-size: 0.875rem;
       color: var(--ink2);
       max-width: 420px;
       line-height: 1.85;
@@ -143,7 +149,7 @@
     }
 
     .section-head h2 {
-      font-size: 10px;
+      font-size: 0.6875rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--ink3);
@@ -186,15 +192,12 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    .tool-card:hover { background: var(--bg); }
-    .tool-card:hover .tool-arrow { color: var(--accent); transform: translate(2px, -2px); }
     .tool-card.no-link { cursor: default; }
-    .tool-card.no-link:hover { background: var(--bg2); }
 
     .tool-name {
       font-family: var(--display);
       font-weight: 700;
-      font-size: 17px;
+      font-size: 1.0625rem;
       letter-spacing: -0.02em;
       color: var(--ink);
       grid-column: 1;
@@ -205,13 +208,13 @@
       grid-column: 2;
       grid-row: 1;
       color: var(--ink3);
-      font-size: 14px;
+      font-size: 0.875rem;
       transition: color 0.12s, transform 0.15s;
       margin-top: 4px;
     }
 
     .tool-desc {
-      font-size: 12px;
+      font-size: 0.8125rem;
       color: var(--ink2);
       line-height: 1.7;
       grid-column: 1;
@@ -219,13 +222,13 @@
     }
 
     .tool-desc a {
-      color: var(--accent);
+      color: var(--accent-text);
       text-decoration: none;
       border-bottom: 1px solid transparent;
       transition: border-color 0.15s;
     }
 
-    .tool-desc a:hover { border-color: var(--accent); }
+    .tool-desc a { position: relative; z-index: 1; }
 
     .tool-meta {
       display: flex;
@@ -238,11 +241,11 @@
     }
 
     .tag {
-      font-size: 9px;
+      font-size: 0.6875rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       background: var(--tag-bg);
-      color: var(--ink3);
+      color: var(--ink2);
       padding: 2px 7px;
       border-radius: 2px;
     }
@@ -256,9 +259,35 @@
       .tag.live { background: #0A2E28; color: #0DD8B8; }
     }
 
+
+    /* INTERACTION: press feedback is instant, hover only where hover exists */
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .tool-name { text-decoration: none; }
+    .tool-name.stretched::after { content: ''; position: absolute; inset: 0; }
+
+    @media (hover: hover) {
+      .nav-links a:hover { color: var(--accent-text); }
+      .tool-card:not(.no-link):hover { background: var(--bg); }
+      .tool-card:not(.no-link):hover .tool-arrow { color: var(--accent-text); transform: translate(2px, -2px); }
+      .tool-desc a:hover, .about-text a:hover { border-color: var(--accent-text); }
+      .contact-link:hover { color: var(--accent-text); border-color: var(--accent-text); }
+    }
+    .tool-card:not(.no-link):active { background: var(--tag-bg); transition-duration: 0s; }
+    .tool-card:not(.no-link):active .tool-arrow { color: var(--accent-text); }
+
+    :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 2px; }
+    a.tool-card:focus-visible { outline-offset: -2px; }
+    .tool-name.stretched:focus-visible { outline: none; }
+    .tool-card:has(.stretched:focus-visible) { outline: 2px solid var(--accent-text); outline-offset: -2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tool-card:not(.no-link):hover .tool-arrow { transform: none; }
+    }
+
     /* APPS */
     .apps-intro {
-      font-size: 12px;
+      font-size: 0.8125rem;
       color: var(--ink2);
       max-width: 460px;
       margin: -8px 0 24px;
@@ -279,12 +308,6 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      transition: border-color 0.15s, transform 0.2s;
-    }
-
-    .app-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
     }
 
     .app-head {
@@ -305,21 +328,21 @@
     .app-name {
       font-family: var(--display);
       font-weight: 700;
-      font-size: 19px;
+      font-size: 1.1875rem;
       letter-spacing: -0.02em;
       color: var(--ink);
       line-height: 1.15;
     }
 
     .app-sub {
-      font-size: 11px;
+      font-size: 0.75rem;
       color: var(--ink3);
       margin-top: 3px;
       line-height: 1.4;
     }
 
     .app-desc {
-      font-size: 12px;
+      font-size: 0.8125rem;
       color: var(--ink2);
       line-height: 1.7;
     }
@@ -329,13 +352,13 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
-      font-size: 11.5px;
+      font-size: 0.75rem;
       color: var(--ink2);
     }
 
     .app-features li::before {
       content: '→ ';
-      color: var(--accent);
+      color: var(--accent-text);
     }
 
     .app-card .tool-meta { margin-top: auto; padding-top: 4px; }
@@ -346,7 +369,7 @@
 
     /* ABOUT */
     .about-text {
-      font-size: 13px;
+      font-size: 0.875rem;
       color: var(--ink2);
       line-height: 1.9;
       max-width: 520px;
@@ -354,13 +377,12 @@
     }
 
     .about-text a {
-      color: var(--accent);
+      color: var(--accent-text);
       text-decoration: none;
       border-bottom: 1px solid transparent;
       transition: border-color 0.15s;
     }
 
-    .about-text a:hover { border-color: var(--accent); }
 
     /* FOOTER */
     footer {
@@ -374,14 +396,14 @@
     }
 
     .footer-note {
-      font-size: 11px;
+      font-size: 0.75rem;
       color: var(--ink3);
     }
 
-    .footer-note span { color: var(--accent); }
+    .footer-note span { color: var(--accent-text); }
 
     .contact-link {
-      font-size: 11px;
+      font-size: 0.75rem;
       color: var(--ink3);
       text-decoration: none;
       border-bottom: 1px solid var(--rule);
@@ -389,22 +411,18 @@
       transition: color 0.15s, border-color 0.15s;
     }
 
-    .contact-link:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
 
     @media (max-width: 480px) {
       .hero { padding: 48px 0 44px; }
       .tool-card { padding: 18px 20px; }
-      .tool-name { font-size: 15px; }
+      .tool-name { font-size: 0.9375rem; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <nav>
+    <nav aria-label="Primary">
       <a href="/" class="site-name">approximate<span>.work</span></a>
       <ul class="nav-links">
         <li><a href="#apps">apps</a></li>
@@ -524,7 +542,7 @@
 
         <a class="tool-card" href="https://redpen.fyi" target="_blank" rel="noopener">
           <span class="tool-name">Red Pen</span>
-          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">An editorial annotation tool for AI output. Paste a response, highlight the rough bits, leave notes, export a revision prompt. The red pen treatment.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
@@ -535,7 +553,7 @@
 
         <a class="tool-card" href="https://htmled.dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">htmled</span>
-          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Paste or upload an HTML file, click any text to edit it inline, export clean HTML. Built for fixing AI-generated reports without touching the source.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
@@ -546,7 +564,7 @@
 
         <div class="tool-card no-link">
           <span class="tool-name">Gymcalwabot</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">A gym slot watcher that books the class you actually want when it opens up — and quietly drops the one you settled for.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
@@ -557,7 +575,7 @@
 
         <a class="tool-card" href="https://pickle.dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">Pickle</span>
-          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">A no-drama decision app. Two people, two options, sliders. Picks the winner based on who cares most — or declares a draw if you're both equally stubborn.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
@@ -565,10 +583,10 @@
           </div>
         </a>
 
-        <div class="tool-card" onclick="window.open('https://esn.nostus.com','_blank')">
-          <span class="tool-name">Nostus &times; ESN Partner Portal</span>
-          <span class="tool-arrow">&#8599;</span>
-          <div class="tool-desc">A referral tracking portal for ESN Greece sections partnered with <a href="https://nostus.com" target="_blank" rel="noopener" onclick="event.stopPropagation()">Nostus</a> — the mid-term accommodation platform for international students in Greece.</div>
+        <div class="tool-card">
+          <a class="tool-name stretched" href="https://esn.nostus.com" target="_blank" rel="noopener">Nostus &times; ESN Partner Portal</a>
+          <span class="tool-arrow" aria-hidden="true">&#8599;</span>
+          <div class="tool-desc">A referral tracking portal for ESN Greece sections partnered with <a href="https://nostus.com" target="_blank" rel="noopener">Nostus</a> — the mid-term accommodation platform for international students in Greece.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
             <span class="tag">partnerships</span>
@@ -578,7 +596,7 @@
 
         <a class="tool-card" href="https://dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">dimitrios.im</span>
-          <span class="tool-arrow">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Personal landing page. Had the domain, needed somewhere to put it.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
@@ -589,7 +607,7 @@
 
         <div class="tool-card no-link">
           <span class="tool-name">moodframe</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">A mood-based music discovery tool. Pick a feeling, get a frame of songs that fit it. Built around color emotion mapping and the Spotify API.</div>
           <div class="tool-meta">
             <span class="tag">wip</span>
@@ -600,7 +618,7 @@
 
         <div class="tool-card no-link">
           <span class="tool-name">approximate.work</span>
-          <span class="tool-arrow" style="opacity:0">&#8599;</span>
+          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">This page. Domain bought at 2am. Built and deployed at the next 2am. Everything went fine.</div>
           <div class="tool-meta">
             <span class="tag live">live</span>
