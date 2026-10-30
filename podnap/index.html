@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#F5F7F6" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0C1512" media="(prefers-color-scheme: dark)" />
+  <title>Podnap · approximate.work</title>
+  <meta name="description" content="Podnap shuffles random podcast episodes to fall asleep to, with a sleep timer that fades out gently." />
+  <meta property="og:title" content="Podnap: shuffle podcasts to sleep" />
+  <meta property="og:description" content="Pick a podcast, tap Play, and drift off." />
+  <meta property="og:image" content="https://approximate.work/podnap/shots/1-home.jpg" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fragment+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/podnap/podnap.css" />
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="Primary">
+      <a href="/" class="site-name">approximate<span>.work</span></a>
+      <ul class="nav-links">
+        <li><a href="#support">support</a></li>
+        <li><a href="/podnap/privacy/">privacy</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="hero-head">
+          <img class="app-icon" src="/icons/podnap.svg" alt="" width="72" height="72" />
+          <div>
+            <p class="hero-label">iPhone app</p>
+            <h1>Podnap</h1>
+          </div>
+        </div>
+        <p class="hero-desc">Pick a podcast, tap Play, and drift off. Podnap plays random episodes back to back and fades out gently when your sleep timer ends.</p>
+      </header>
+
+      <div class="shots" aria-label="Screenshots">
+        <img src="/podnap/shots/1-home.jpg" alt="Home screen with the selected podcast and a Play Random Episode button" width="414" height="900" loading="lazy" />
+        <img src="/podnap/shots/2-play.jpg" alt="An episode playing with the sleep timer counting down" width="414" height="900" loading="lazy" />
+        <img src="/podnap/shots/3-timer.jpg" alt="Sleep timer choices from 15 minutes to 2 hours or end of episode" width="414" height="900" loading="lazy" />
+        <img src="/podnap/shots/4-add.jpg" alt="Searching for podcasts to add" width="414" height="900" loading="lazy" />
+      </div>
+
+      <h2>What it does</h2>
+      <ul>
+        <li><strong>Shuffle, don't scroll.</strong> One tap plays a random episode, and another random one follows, without repeats.</li>
+        <li><strong>A sleep timer that fades.</strong> 15 minutes to 2 hours, or end of episode. It starts every time you press Play.</li>
+        <li><strong>Any podcast.</strong> Search by name or paste any RSS feed.</li>
+        <li><strong>Hands-free.</strong> “Shuffle Podnap” with Siri, Shortcuts or the Action button.</li>
+        <li><strong>Private.</strong> No accounts, no ads, no tracking.</li>
+      </ul>
+
+      <h2 id="support">Contact</h2>
+      <p>Questions, bugs or ideas? I read every message.</p>
+      <a class="mail" href="mailto:podnap@dimitrios.im?subject=Podnap%20Support">podnap@dimitrios.im</a>
+      <p>You can also tap the info button in the app and choose Send Feedback, which adds your app and iOS version for you.</p>
+
+      <h2>Common questions</h2>
+
+      <h3>How do I add a podcast?</h3>
+      <p>Tap + and search for the show by name, or paste its RSS feed link.</p>
+
+      <h3>How does the sleep timer work?</h3>
+      <p>Tap the moon button next to Play and choose a length, or End of Episode. The timer starts each time you press Play, and the audio fades out instead of stopping abruptly. Tap × to turn it off.</p>
+
+      <h3>Can I use it with Siri?</h3>
+      <p>Yes. Say “Shuffle Podnap”, or “Shuffle” followed by a podcast name and “in Podnap”. You can also add Podnap to Shortcuts, the Action button, or a bedtime automation.</p>
+
+      <h3>An episode won't play. What can I do?</h3>
+      <p>Podnap streams audio directly from each podcast's publisher. If an episode fails, Podnap moves on to another random one. If a whole show won't play, check your connection, then remove the podcast and add it again. If it still fails, email me the show's name.</p>
+
+      <h3>Where is my data stored?</h3>
+      <p>Only on your iPhone. There are no accounts, ads or tracking. See the <a href="/podnap/privacy/">privacy policy</a>.</p>
+    </main>
+
+    <footer>
+      <span>Podnap · approximate.work</span>
+      <a href="/podnap/privacy/">Privacy Policy</a>
+    </footer>
+  </div>
+</body>
+</html>
