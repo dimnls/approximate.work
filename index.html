@@ -28,8 +28,6 @@
       --accent-text:    #087D6A; /* accent for small text: 4.7:1 on --bg */
       --accent-display: #0A9A83; /* accent for large display text: 3.3:1 */
       --tag-bg:  #E0E8E5;
-      --live-bg: #D4F0EA;
-      --live-ink:#0A6B59;
       --mono:    'Fragment Mono', ui-monospace, monospace;
       --display: 'Syne', system-ui, sans-serif;
       --glow:    13%;
@@ -47,8 +45,6 @@
         --accent-text:    #0DD8B8;
         --accent-display: #0DD8B8;
         --tag-bg:  #152420;
-        --live-bg: #0A2E28;
-        --live-ink:#0DD8B8;
         --glow:    17%;
       }
     }
@@ -173,20 +169,6 @@
 
     .section-intro { font-size: 0.8125rem; color: var(--ink2); max-width: 480px; margin: -4px 0 20px; }
 
-    /* TAGS */
-    .tags { display: flex; gap: 5px; flex-wrap: wrap; }
-
-    .tag {
-      font-size: 0.6875rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: var(--tag-bg);
-      color: var(--ink2);
-      padding: 1px 8px;
-      border-radius: 999px;
-    }
-
-    .tag.live { background: var(--live-bg); color: var(--live-ink); }
 
     /* APPS */
     .apps {
@@ -256,8 +238,6 @@
     .why dt.itch { color: var(--accent-text); }
     .why dd.itch { color: var(--ink); }
 
-    .app .tags { margin-top: auto; padding-top: 2px; }
-
     /* TOOLS */
     .tools {
       display: flex;
@@ -271,8 +251,8 @@
       background: var(--bg2);
       padding: 16px 20px;
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 4px 16px;
+      grid-template-columns: auto 1fr auto;
+      gap: 4px 10px;
       text-decoration: none;
       color: inherit;
       position: relative;
@@ -303,7 +283,17 @@
       transition: border-color 0.15s;
     }
 
-    .tool-card .tags { grid-column: 1 / -1; margin-top: 6px; }
+    /* live / wip, a quiet marker next to the name */
+    .status {
+      align-self: center;
+      font-size: 0.6875rem;
+      letter-spacing: 0.06em;
+      color: var(--ink3);
+      white-space: nowrap;
+    }
+    .status::before { content: '○ '; }
+    .status.live { color: var(--accent-text); }
+    .status.live::before { content: '● '; }
 
     .tool-name.stretched::after { content: ''; position: absolute; inset: 0; }
     .tool-name.stretched:focus-visible { outline: none; }
@@ -446,11 +436,6 @@
             <dt>fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
             <dt>skipped</dt><dd>Accounts, queues, discovery. It's a bedtime button.</dd>
           </dl>
-          <div class="tags">
-            <span class="tag">ios</span>
-            <span class="tag">podcasts</span>
-            <span class="tag">siri</span>
-          </div>
         </article>
 
         <article class="app" data-app="dense">
@@ -466,12 +451,6 @@
             <dt>fix</dt><dd>Widgets that fit as much as you can read. Font, size and spacing tuned per widget.</dd>
             <dt>skipped</dt><dd>The calendar app. The widget is the whole point.</dd>
           </dl>
-          <div class="tags">
-            <span class="tag">ios</span>
-            <span class="tag">widgets</span>
-            <span class="tag">calendar</span>
-            <span class="tag">reminders</span>
-          </div>
         </article>
 
         <article class="app" data-app="corkpin">
@@ -487,12 +466,6 @@
             <dt>fix</dt><dd>One board. Links unfurl, text in screenshots is searchable, the Share sheet drops anything in.</dd>
             <dt>skipped</dt><dd>A server. It syncs through your own iCloud, web version included.</dd>
           </dl>
-          <div class="tags">
-            <span class="tag">ios</span>
-            <span class="tag">web</span>
-            <span class="tag">notes</span>
-            <span class="tag">icloud</span>
-          </div>
         </article>
 
         <article class="app" data-app="contrail">
@@ -508,12 +481,6 @@
             <dt>fix</dt><dd>It finds flights in your calendar, booking emails, PDFs and screenshots. You just confirm.</dd>
             <dt>skipped</dt><dd>Live tracking. Plenty of apps already do that.</dd>
           </dl>
-          <div class="tags">
-            <span class="tag">ios</span>
-            <span class="tag">travel</span>
-            <span class="tag">widgets</span>
-            <span class="tag">stats</span>
-          </div>
         </article>
 
         <article class="app" data-app="tend">
@@ -529,12 +496,6 @@
             <dt>fix</dt><dd>A score where recent days count most. A miss nudges it down, one check-in starts the climb back.</dd>
             <dt>skipped</dt><dd>The reset. No number to lose, no reason to give up.</dd>
           </dl>
-          <div class="tags">
-            <span class="tag">ios</span>
-            <span class="tag">habits</span>
-            <span class="tag">widgets</span>
-            <span class="tag">stats</span>
-          </div>
         </article>
 
       </div>
@@ -547,86 +508,55 @@
 
         <a class="tool-card" href="https://redpen.fyi" target="_blank" rel="noopener">
           <span class="tool-name">Red Pen</span>
+          <span class="status live">live</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">An editorial annotation tool for AI output. Paste a response, highlight the rough bits, leave notes, export a revision prompt. The red pen treatment.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">html</span>
-            <span class="tag">zero infra</span>
-          </div>
         </a>
 
         <a class="tool-card" href="https://htmled.dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">htmled</span>
+          <span class="status live">live</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Paste or upload an HTML file, click any text to edit it inline, export clean HTML. Built for fixing AI-generated reports without touching the source.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">html</span>
-            <span class="tag">zero infra</span>
-          </div>
         </a>
 
         <div class="tool-card">
           <span class="tool-name">Gymcalwabot</span>
+          <span class="status live">live</span>
           <div class="tool-desc">A gym slot watcher that books the class you actually want when it opens up — and quietly drops the one you settled for.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">apps script</span>
-            <span class="tag">google calendar</span>
-          </div>
         </div>
 
         <a class="tool-card" href="https://pickle.dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">Pickle</span>
+          <span class="status live">live</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">A no-drama decision app. Two people, two options, sliders. Picks the winner based on who cares most — or declares a draw if you're both equally stubborn.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">decision app</span>
-          </div>
         </a>
 
         <div class="tool-card">
           <a class="tool-name stretched" href="https://esn.nostus.com" target="_blank" rel="noopener">Nostus &times; ESN Partner Portal</a>
+          <span class="status live">live</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">A referral tracking portal for ESN Greece sections partnered with <a href="https://nostus.com" target="_blank" rel="noopener">Nostus</a> — the mid-term accommodation platform for international students in Greece.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">partnerships</span>
-            <span class="tag">nostus</span>
-          </div>
         </div>
 
         <a class="tool-card" href="https://dimitrios.im" target="_blank" rel="noopener">
           <span class="tool-name">dimitrios.im</span>
+          <span class="status live">live</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Personal landing page. Had the domain, needed somewhere to put it.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">personal</span>
-            <span class="tag">github pages</span>
-          </div>
         </a>
 
         <div class="tool-card">
           <span class="tool-name">moodframe</span>
+          <span class="status wip">wip</span>
           <div class="tool-desc">A mood-based music discovery tool. Pick a feeling, get a frame of songs that fit it. Built around color emotion mapping and the Spotify API.</div>
-          <div class="tags">
-            <span class="tag">wip</span>
-            <span class="tag">spotify</span>
-            <span class="tag">music</span>
-          </div>
         </div>
 
         <div class="tool-card">
           <span class="tool-name">approximate.work</span>
-          <div class="tool-desc">This page. Domain bought at 2am. Built and deployed at the next 2am. Everything went fine.</div>
-          <div class="tags">
-            <span class="tag live">live</span>
-            <span class="tag">meta</span>
-            <span class="tag">you're looking at it</span>
-          </div>
+          <span class="status live">live</span>
+          <div class="tool-desc">This page, which you're looking at. Domain bought at 2am. Built and deployed at the next 2am. Everything went fine.</div>
         </div>
 
       </div>
