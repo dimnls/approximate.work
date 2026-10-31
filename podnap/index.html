@@ -14,11 +14,11 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fragment+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/podnap/podnap.css" />
 </head>
 <body>
-  <div class="wrap">
+  <div class="nav-bar">
     <nav aria-label="Primary">
       <a href="/" class="site-name">approximate<span>.work</span></a>
       <ul class="nav-links">
@@ -26,6 +26,9 @@
         <li><a href="/podnap/privacy/">privacy</a></li>
       </ul>
     </nav>
+  </div>
+
+  <div class="wrap">
 
     <main>
       <header class="hero">
@@ -37,6 +40,11 @@
           </div>
         </div>
         <p class="hero-desc">Pick a podcast, tap Play, and drift off. Podnap plays random episodes back to back and fades out gently when your sleep timer ends.</p>
+        <dl class="why">
+          <dt class="itch">itch</dt><dd class="itch">Scrolling for an episode in the dark, then waking up when it ends.</dd>
+          <dt>fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
+          <dt>skipped</dt><dd>Accounts, queues, discovery. It's a bedtime button.</dd>
+        </dl>
       </header>
 
       <div class="shots" aria-label="Screenshots">
@@ -47,7 +55,7 @@
       </div>
 
       <h2>What it does</h2>
-      <ul>
+      <ul class="features">
         <li><strong>Shuffle, don't scroll.</strong> One tap plays a random episode, and another random one follows, without repeats.</li>
         <li><strong>A sleep timer that fades.</strong> 15 minutes to 2 hours, or end of episode. It starts every time you press Play.</li>
         <li><strong>Any podcast.</strong> Search by name or paste any RSS feed.</li>
