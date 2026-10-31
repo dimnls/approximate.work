@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#0C1512" media="(prefers-color-scheme: dark)" />
   <title>approximate.work</title>
   <meta name="description" content="A small collection of things built approximately." />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,18 +19,19 @@
 
     :root {
       --bg:      #F5F7F6;
-      --bg2:     #EAEEEC;
+      --bg2:     #EDF1EF;
       --ink:     #0F1A17;
       --ink2:    #3D5248;
       --ink3:    #566D65;
-      --rule:    #C4D0CB;
+      --rule:    #D3DDD9;
       --accent:  #0ABFA3;
-      --accent2: #087D6A;
       --accent-text:    #087D6A; /* accent for small text: 4.7:1 on --bg */
       --accent-display: #0A9A83; /* accent for large display text: 3.3:1 */
-      --tag-bg:  #DDE6E3;
-      --mono:    'Fragment Mono', monospace;
-      --display: 'Syne', sans-serif;
+      --tag-bg:  #E0E8E5;
+      --live-bg: #D4F0EA;
+      --live-ink:#0A6B59;
+      --mono:    'Fragment Mono', ui-monospace, monospace;
+      --display: 'Syne', system-ui, sans-serif;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -42,10 +43,11 @@
         --ink3:    #6F918A;
         --rule:    #1E3330;
         --accent:  #0DD8B8;
-        --accent2: #0ABFA3;
         --accent-text:    #0DD8B8;
         --accent-display: #0DD8B8;
         --tag-bg:  #152420;
+        --live-bg: #0A2E28;
+        --live-ink:#0DD8B8;
       }
     }
 
@@ -57,23 +59,24 @@
       font-family: var(--mono);
       font-size: 0.875rem;
       line-height: 1.7;
-      padding: 0 24px;
+      padding: 0 20px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
     }
 
-    .wrap {
-      max-width: 660px;
-      margin: 0 auto;
-    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+
+    a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 4px; }
 
     /* NAV */
     nav {
-      padding: 32px 0 12px;
+      padding: 28px 0 12px;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      border-bottom: 1px solid var(--rule);
+      gap: 16px;
     }
 
     .site-name {
@@ -87,11 +90,7 @@
 
     .site-name span { color: var(--accent-text); }
 
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-    }
+    .nav-links { display: flex; gap: 20px; list-style: none; }
 
     .nav-links a {
       display: inline-block;
@@ -99,53 +98,33 @@
       color: var(--ink3);
       text-decoration: none;
       font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: lowercase;
+      letter-spacing: 0.06em;
       transition: color 0.15s;
     }
 
     /* HERO */
-    .hero {
-      padding: 72px 0 64px;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .hero-label {
-      font-size: 0.6875rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent-text);
-      margin-bottom: 28px;
-    }
+    .hero { padding: 64px 0 56px; }
 
     .hero h1 {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(2.125rem, 6vw, 3.125rem);
-      line-height: 1.05;
+      font-size: clamp(2.125rem, 7vw, 3.5rem);
+      line-height: 1.02;
       letter-spacing: -0.04em;
       color: var(--ink);
       margin-bottom: 24px;
     }
 
-    .hero h1 em {
-      font-style: normal;
-      color: var(--accent-display);
-    }
+    .hero h1 em { font-style: normal; color: var(--accent-display); }
 
-    .hero-desc {
-      font-size: 0.875rem;
-      color: var(--ink2);
-      max-width: 420px;
-      line-height: 1.85;
-    }
+    .hero-desc { color: var(--ink2); max-width: 440px; line-height: 1.85; }
 
     /* SECTION HEADINGS */
     .section-head {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 48px 0 28px;
+      gap: 14px;
+      padding: 40px 0 20px;
     }
 
     .section-head h2 {
@@ -157,224 +136,152 @@
       white-space: nowrap;
     }
 
-    .section-head::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--rule);
-    }
+    .section-head::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
 
-    /* TOOL CARDS */
-    .tools {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--rule);
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 48px;
-    }
+    .section-intro { font-size: 0.8125rem; color: var(--ink2); max-width: 480px; margin: -4px 0 20px; }
 
-    .tool-card {
-      background: var(--bg2);
-      padding: 22px 26px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 7px 20px;
-      align-items: start;
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.12s;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .tool-card:not(:last-child) {
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .tool-card.no-link { cursor: default; }
-
-    .tool-name {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.0625rem;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      grid-column: 1;
-      grid-row: 1;
-    }
-
-    .tool-arrow {
-      grid-column: 2;
-      grid-row: 1;
-      color: var(--ink3);
-      font-size: 0.875rem;
-      transition: color 0.12s, transform 0.15s;
-      margin-top: 4px;
-    }
-
-    .tool-desc {
-      font-size: 0.8125rem;
-      color: var(--ink2);
-      line-height: 1.7;
-      grid-column: 1;
-      grid-row: 2;
-    }
-
-    .tool-desc a {
-      color: var(--accent-text);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s;
-    }
-
-    .tool-desc a { position: relative; z-index: 1; }
-
-    .tool-meta {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      grid-column: 1 / -1;
-      grid-row: 3;
-      margin-top: 6px;
-      flex-wrap: wrap;
-    }
+    /* TAGS */
+    .tags { display: flex; gap: 5px; flex-wrap: wrap; }
 
     .tag {
       font-size: 0.6875rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       background: var(--tag-bg);
       color: var(--ink2);
-      padding: 2px 7px;
-      border-radius: 2px;
+      padding: 1px 8px;
+      border-radius: 999px;
     }
 
-    .tag.live {
-      background: #D4F0EA;
-      color: #0A6B59;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .tag.live { background: #0A2E28; color: #0DD8B8; }
-    }
-
-
-    /* INTERACTION: press feedback is instant, hover only where hover exists */
-    a { -webkit-tap-highlight-color: transparent; }
-
-    .tool-name { text-decoration: none; }
-    .tool-name.stretched::after { content: ''; position: absolute; inset: 0; }
-
-    @media (hover: hover) {
-      .nav-links a:hover { color: var(--accent-text); }
-      .tool-card:not(.no-link):hover { background: var(--bg); }
-      .tool-card:not(.no-link):hover .tool-arrow { color: var(--accent-text); transform: translate(2px, -2px); }
-      .tool-desc a:hover, .about-text a:hover { border-color: var(--accent-text); }
-      .contact-link:hover { color: var(--accent-text); border-color: var(--accent-text); }
-    }
-    .tool-card:not(.no-link):active { background: var(--tag-bg); transition-duration: 0s; }
-    .tool-card:not(.no-link):active .tool-arrow { color: var(--accent-text); }
-
-    :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 2px; }
-    a.tool-card:focus-visible { outline-offset: -2px; }
-    .tool-name.stretched:focus-visible { outline: none; }
-    .tool-card:has(.stretched:focus-visible) { outline: 2px solid var(--accent-text); outline-offset: -2px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tool-card:not(.no-link):hover .tool-arrow { transform: none; }
-    }
+    .tag.live { background: var(--live-bg); color: var(--live-ink); }
 
     /* APPS */
-    .apps-intro {
-      font-size: 0.8125rem;
-      color: var(--ink2);
-      max-width: 460px;
-      margin: -8px 0 24px;
-    }
-
     .apps {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 8px;
+      gap: 12px;
     }
 
-    .app-card {
+    .app {
       background: var(--bg2);
       border: 1px solid var(--rule);
-      border-radius: 10px;
-      padding: 24px 22px 20px;
+      border-radius: 14px;
+      padding: 18px 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .app-head {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .app-head { display: flex; align-items: center; gap: 14px; }
 
     .app-icon {
-      width: 64px;
-      height: 64px;
+      width: 52px;
+      height: 52px;
       flex-shrink: 0;
       border-radius: 22.5%;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 6px 18px -6px rgba(15,26,23,0.35);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 6px 16px -8px rgba(15,26,23,0.4);
       display: block;
     }
 
     .app-name {
       font-family: var(--display);
       font-weight: 700;
-      font-size: 1.1875rem;
+      font-size: 1.125rem;
       letter-spacing: -0.02em;
       color: var(--ink);
       line-height: 1.15;
+      text-decoration: none;
     }
 
-    .app-sub {
+    a.app-name { border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+    a.app-name::after { content: ' ↗'; font-family: var(--mono); font-weight: 400; font-size: 0.75rem; color: var(--ink3); }
+
+    .app-sub { font-size: 0.75rem; color: var(--ink3); line-height: 1.4; margin-top: 2px; }
+
+    /* itch / fix / skipped: the short version of why each app exists */
+    .why {
+      display: grid;
+      grid-template-columns: 4.5em minmax(0, 1fr);
+      gap: 6px 8px;
       font-size: 0.75rem;
-      color: var(--ink3);
-      margin-top: 3px;
-      line-height: 1.4;
+      line-height: 1.6;
     }
 
-    .app-desc {
-      font-size: 0.8125rem;
-      color: var(--ink2);
-      line-height: 1.7;
-    }
+    .why dt { color: var(--ink3); }
+    .why dd { color: var(--ink2); }
+    .why dt.itch { color: var(--accent-text); }
+    .why dd.itch { color: var(--ink); }
 
-    .app-features {
-      list-style: none;
+    .app .tags { margin-top: auto; padding-top: 2px; }
+
+    /* TOOLS */
+    .tools {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 0.75rem;
-      color: var(--ink2);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      overflow: hidden;
     }
 
-    .app-features li::before {
-      content: '→ ';
+    .tool-card {
+      background: var(--bg2);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 16px;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      transition: background 0.12s;
+    }
+
+    .tool-card:not(:last-child) { border-bottom: 1px solid var(--rule); }
+
+    .tool-name {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .tool-arrow { color: var(--ink3); transition: color 0.12s, transform 0.15s; }
+
+    .tool-desc { grid-column: 1 / -1; font-size: 0.8125rem; color: var(--ink2); line-height: 1.65; }
+
+    .tool-desc a {
+      position: relative;
+      z-index: 1;
       color: var(--accent-text);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
     }
 
-    .app-card .tool-meta { margin-top: auto; padding-top: 4px; }
+    .tool-card .tags { grid-column: 1 / -1; margin-top: 6px; }
 
-    @media (max-width: 600px) {
-      .apps { grid-template-columns: 1fr; }
-    }
+    .tool-name.stretched::after { content: ''; position: absolute; inset: 0; }
+    .tool-name.stretched:focus-visible { outline: none; }
+    .tool-card:has(.stretched:focus-visible) { outline: 2px solid var(--accent-text); outline-offset: -2px; }
+    a.tool-card:focus-visible { outline-offset: -2px; }
 
     /* ABOUT */
-    .about-text {
-      font-size: 0.875rem;
-      color: var(--ink2);
-      line-height: 1.9;
+    .about-quote {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.375rem, 4.4vw, 1.875rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--ink);
       max-width: 520px;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
+
+    .about-quote em { font-style: normal; color: var(--accent-display); }
+
+    .about-text { color: var(--ink2); line-height: 1.85; max-width: 520px; }
+    .about-text + .about-text { margin-top: 14px; }
 
     .about-text a {
       color: var(--accent-text);
@@ -383,11 +290,11 @@
       transition: border-color 0.15s;
     }
 
-
     /* FOOTER */
     footer {
+      margin-top: 56px;
       border-top: 1px solid var(--rule);
-      padding: 28px 0 52px;
+      padding: 24px 0 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -395,11 +302,7 @@
       gap: 12px;
     }
 
-    .footer-note {
-      font-size: 0.75rem;
-      color: var(--ink3);
-    }
-
+    .footer-note { font-size: 0.75rem; color: var(--ink3); }
     .footer-note span { color: var(--accent-text); }
 
     .contact-link {
@@ -411,11 +314,25 @@
       transition: color 0.15s, border-color 0.15s;
     }
 
+    /* INTERACTION: press feedback is instant, hover only where hover exists */
+    @media (hover: hover) {
+      .nav-links a:hover { color: var(--accent-text); }
+      a.app-name:hover { border-color: var(--accent-text); }
+      a.tool-card:hover, .tool-card:has(.stretched):hover { background: var(--bg); }
+      a.tool-card:hover .tool-arrow, .tool-card:has(.stretched):hover .tool-arrow { color: var(--accent-text); transform: translate(2px, -2px); }
+      .tool-desc a:hover, .about-text a:hover { border-color: var(--accent-text); }
+      .contact-link:hover { color: var(--accent-text); border-color: var(--accent-text); }
+    }
+    a.tool-card:active, .tool-card:has(.stretched):active { background: var(--tag-bg); transition-duration: 0s; }
 
-    @media (max-width: 480px) {
-      .hero { padding: 48px 0 44px; }
-      .tool-card { padding: 18px 20px; }
-      .tool-name { font-size: 0.9375rem; }
+    @media (prefers-reduced-motion: reduce) {
+      .tool-card:hover .tool-arrow { transform: none; }
+    }
+
+    @media (max-width: 600px) {
+      .apps { grid-template-columns: 1fr; }
+      .hero { padding: 44px 0 40px; }
+      .tool-card { padding: 14px 16px; }
     }
   </style>
 </head>
@@ -441,46 +358,44 @@
 
     <div id="apps">
       <div class="section-head"><h2>ios apps</h2></div>
-      <p class="apps-intro">Small native iPhone apps, built with Claude Code for things I use every day.</p>
+      <p class="section-intro">Small native iPhone apps, built with Claude Code for things that bugged me. Each one starts with the itch.</p>
 
       <div class="apps">
 
-        <article class="app-card">
+        <article class="app">
           <div class="app-head">
-            <img class="app-icon" src="/icons/podnap.svg" alt="Podnap app icon" width="64" height="64" />
+            <img class="app-icon" src="icons/podnap.svg" alt="" width="52" height="52" />
             <div>
-              <div class="app-name">Podnap</div>
+              <a class="app-name" href="podnap/">Podnap</a>
               <div class="app-sub">Shuffle podcasts to sleep</div>
             </div>
           </div>
-          <p class="app-desc">Pick a show, tap play, drift off. Podnap pulls the full RSS back catalogue and plays random episodes back to back until the sleep timer fades it out.</p>
-          <ul class="app-features">
-            <li>Sleep timer that fades, not cuts</li>
-            <li>Search Apple Podcasts or paste any feed</li>
-            <li>&ldquo;Shuffle Podnap&rdquo; with Siri</li>
-          </ul>
-          <div class="tool-meta">
+          <dl class="why">
+            <dt class="itch">itch</dt><dd class="itch">Scrolling for an episode in the dark, then waking up when it ends.</dd>
+            <dt>fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
+            <dt>skipped</dt><dd>Accounts, queues, discovery. It's a bedtime button.</dd>
+          </dl>
+          <div class="tags">
             <span class="tag">ios</span>
             <span class="tag">podcasts</span>
-            <span class="tag">no accounts</span>
+            <span class="tag">siri</span>
           </div>
         </article>
 
-        <article class="app-card">
+        <article class="app">
           <div class="app-head">
-            <img class="app-icon" src="/icons/dense.svg" alt="Dense app icon" width="64" height="64" />
+            <img class="app-icon" src="icons/dense.svg" alt="" width="52" height="52" />
             <div>
               <div class="app-name">Dense</div>
               <div class="app-sub">Calendar &amp; Reminders widgets that fit more</div>
             </div>
           </div>
-          <p class="app-desc">The native widgets stop at three. Dense doesn't. Tune theme, font, size and spacing per widget with a live preview, and fit as much as you can actually read.</p>
-          <ul class="app-features">
-            <li>Dense Calendar: upcoming events agenda</li>
-            <li>Dense Reminders: tick off from the widget</li>
-            <li>Small, medium, large + Lock Screen</li>
-          </ul>
-          <div class="tool-meta">
+          <dl class="why">
+            <dt class="itch">itch</dt><dd class="itch">Apple's widgets show three things and a lot of empty space.</dd>
+            <dt>fix</dt><dd>Widgets that fit as much as you can read. Font, size and spacing tuned per widget.</dd>
+            <dt>skipped</dt><dd>The calendar app. The widget is the whole point.</dd>
+          </dl>
+          <div class="tags">
             <span class="tag">ios</span>
             <span class="tag">widgets</span>
             <span class="tag">calendar</span>
@@ -488,21 +403,20 @@
           </div>
         </article>
 
-        <article class="app-card">
+        <article class="app">
           <div class="app-head">
-            <img class="app-icon" src="/icons/corkpin.svg" alt="Corkpin app icon" width="64" height="64" />
+            <img class="app-icon" src="icons/corkpin.svg" alt="" width="52" height="52" />
             <div>
               <div class="app-name">Corkpin</div>
               <div class="app-sub">A pinboard for quick notes</div>
             </div>
           </div>
-          <p class="app-desc">Keep-style notes for iPhone: jot it, pin it, find it later. Links unfurl into previews, text inside screenshots is searchable, and everything syncs through your own iCloud.</p>
-          <ul class="app-features">
-            <li>Masonry board with colours, labels, pins</li>
-            <li>Home Screen widgets + Share extension</li>
-            <li>Same board on the web, signed in with Apple</li>
-          </ul>
-          <div class="tool-meta">
+          <dl class="why">
+            <dt class="itch">itch</dt><dd class="itch">Notes scattered across Photos, Notes and texts to myself. Saving is easy, finding isn't.</dd>
+            <dt>fix</dt><dd>One board. Links unfurl, text in screenshots is searchable, the Share sheet drops anything in.</dd>
+            <dt>skipped</dt><dd>A server. It syncs through your own iCloud, web version included.</dd>
+          </dl>
+          <div class="tags">
             <span class="tag">ios</span>
             <span class="tag">web</span>
             <span class="tag">notes</span>
@@ -510,21 +424,20 @@
           </div>
         </article>
 
-        <article class="app-card">
+        <article class="app">
           <div class="app-head">
-            <img class="app-icon" src="/icons/contrail.svg" alt="Contrail app icon" width="64" height="64" />
+            <img class="app-icon" src="icons/contrail.svg" alt="" width="52" height="52" />
             <div>
               <div class="app-name">Contrail</div>
               <div class="app-sub">A personal flight log</div>
             </div>
           </div>
-          <p class="app-desc">Every flight you've taken, logged and laid out nicely, with lifetime stats on top. Getting flights in is the easy part: it finds them in your calendar, or in whatever booking email you share to it.</p>
-          <ul class="app-features">
-            <li>Look up by flight number + date</li>
-            <li>Import from Calendar, PDFs, screenshots</li>
-            <li>On-device parsing, synced via iCloud</li>
-          </ul>
-          <div class="tool-meta">
+          <dl class="why">
+            <dt class="itch">itch</dt><dd class="itch">Flight logs die at data entry. Nobody types in ten years of boarding passes.</dd>
+            <dt>fix</dt><dd>It finds flights in your calendar, booking emails, PDFs and screenshots. You just confirm.</dd>
+            <dt>skipped</dt><dd>Live tracking. Plenty of apps already do that.</dd>
+          </dl>
+          <div class="tags">
             <span class="tag">ios</span>
             <span class="tag">travel</span>
             <span class="tag">widgets</span>
@@ -532,21 +445,20 @@
           </div>
         </article>
 
-        <article class="app-card">
+        <article class="app">
           <div class="app-head">
-            <img class="app-icon" src="/icons/tend.svg" alt="Tend app icon" width="64" height="64" />
+            <img class="app-icon" src="icons/tend.svg" alt="" width="52" height="52" />
             <div>
               <div class="app-name">Tend</div>
               <div class="app-sub">Habits, without the streaks</div>
             </div>
           </div>
-          <p class="app-desc">For the things you tend to do. Each habit gets a score where recent days count most, so a missed day only nudges it down and one check-in starts the climb back. Daily, twice a week, every few days: whatever fits.</p>
-          <ul class="app-features">
-            <li>Scores, not streaks, with a year heatmap</li>
-            <li>Check in from widgets, Siri or Shortcuts</li>
-            <li>Export every check-in as CSV or JSON</li>
-          </ul>
-          <div class="tool-meta">
+          <dl class="why">
+            <dt class="itch">itch</dt><dd class="itch">Miss one day and the streak resets to zero. That's usually when people quit.</dd>
+            <dt>fix</dt><dd>A score where recent days count most. A miss nudges it down, one check-in starts the climb back.</dd>
+            <dt>skipped</dt><dd>The reset. No number to lose, no reason to give up.</dd>
+          </dl>
+          <div class="tags">
             <span class="tag">ios</span>
             <span class="tag">habits</span>
             <span class="tag">widgets</span>
@@ -566,7 +478,7 @@
           <span class="tool-name">Red Pen</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">An editorial annotation tool for AI output. Paste a response, highlight the rough bits, leave notes, export a revision prompt. The red pen treatment.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">html</span>
             <span class="tag">zero infra</span>
@@ -577,18 +489,17 @@
           <span class="tool-name">htmled</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Paste or upload an HTML file, click any text to edit it inline, export clean HTML. Built for fixing AI-generated reports without touching the source.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">html</span>
             <span class="tag">zero infra</span>
           </div>
         </a>
 
-        <div class="tool-card no-link">
+        <div class="tool-card">
           <span class="tool-name">Gymcalwabot</span>
-          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">A gym slot watcher that books the class you actually want when it opens up — and quietly drops the one you settled for.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">apps script</span>
             <span class="tag">google calendar</span>
@@ -599,7 +510,7 @@
           <span class="tool-name">Pickle</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">A no-drama decision app. Two people, two options, sliders. Picks the winner based on who cares most — or declares a draw if you're both equally stubborn.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">decision app</span>
           </div>
@@ -609,7 +520,7 @@
           <a class="tool-name stretched" href="https://esn.nostus.com" target="_blank" rel="noopener">Nostus &times; ESN Partner Portal</a>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">A referral tracking portal for ESN Greece sections partnered with <a href="https://nostus.com" target="_blank" rel="noopener">Nostus</a> — the mid-term accommodation platform for international students in Greece.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">partnerships</span>
             <span class="tag">nostus</span>
@@ -620,29 +531,27 @@
           <span class="tool-name">dimitrios.im</span>
           <span class="tool-arrow" aria-hidden="true">&#8599;</span>
           <div class="tool-desc">Personal landing page. Had the domain, needed somewhere to put it.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">personal</span>
             <span class="tag">github pages</span>
           </div>
         </a>
 
-        <div class="tool-card no-link">
+        <div class="tool-card">
           <span class="tool-name">moodframe</span>
-          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">A mood-based music discovery tool. Pick a feeling, get a frame of songs that fit it. Built around color emotion mapping and the Spotify API.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag">wip</span>
             <span class="tag">spotify</span>
             <span class="tag">music</span>
           </div>
         </div>
 
-        <div class="tool-card no-link">
+        <div class="tool-card">
           <span class="tool-name">approximate.work</span>
-          <span class="tool-arrow" aria-hidden="true" style="opacity:0">&#8599;</span>
           <div class="tool-desc">This page. Domain bought at 2am. Built and deployed at the next 2am. Everything went fine.</div>
-          <div class="tool-meta">
+          <div class="tags">
             <span class="tag live">live</span>
             <span class="tag">meta</span>
             <span class="tag">you're looking at it</span>
@@ -655,11 +564,12 @@
     <div id="about">
       <div class="section-head"><h2>about</h2></div>
 
+      <p class="about-quote">I have <em>approximate</em> knowledge of many things.</p>
+
       <p class="about-text">
         This is <a href="https://dimitrios.im" target="_blank" rel="noopener">Dimitrios</a> — a PM by trade,
-        a tinkerer by habit. These tools exist because they scratched an itch,
-        taught me something, or both. None of them are particularly serious.
-        Most of them work.
+        a tinkerer by habit. These exist because something bugged me, taught me something, or both.
+        None of them are particularly serious. Most of them work.
       </p>
 
       <p class="about-text">
