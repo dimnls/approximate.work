@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dense · approximate.work</title>
+<meta name="description" content="Compact Home Screen widgets for Apple Calendar and Reminders.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="icon" type="image/svg+xml" href="/icons/dense.svg">
+</head>
+<body>
+<style>
+/* Layout: one narrow reading column; widgets break out of it at real iOS proportions (1px = 1pt, zoomed). */
+:root {
+  --bg: #0a0b0f;
+  --surface: #12141a;
+  --raise: #191c24;
+  --line: rgba(214, 222, 255, 0.09);
+  --fg: #eceef3;
+  --muted: #8d93a1;
+  --faint: #5a606d;
+  --accent: #ff6159;       /* Dense's own "Today" red, dark variant */
+  --accent-ink: #1a0605;
+  --wall-a: #2a1f5c; --wall-b: #0d3a4a; --wall-c: #07080c;
+  --display: "Bricolage Grotesque", "Avenir Next Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Geist", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --w: 1120px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6f6f3; --surface: #ffffff; --raise: #eeeeea; --line: rgba(20, 24, 40, 0.1);
+    --fg: #121318; --muted: #5d626e; --faint: #9196a1; --accent: #e5332a; --accent-ink: #fff;
+    --wall-a: #6b5be0; --wall-b: #2aa0b8; --wall-c: #1a1d2b;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f6f6f3; --surface: #ffffff; --raise: #eeeeea; --line: rgba(20, 24, 40, 0.1);
+  --fg: #121318; --muted: #5d626e; --faint: #9196a1; --accent: #e5332a; --accent-ink: #fff;
+  --wall-a: #6b5be0; --wall-b: #2aa0b8; --wall-c: #1a1d2b;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 400 16px/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: var(--w); margin: 0 auto; }
+
+/* ---------- type ---------- */
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+h1 { font-size: clamp(44px, 7.4vw, 92px); line-height: 0.92; font-stretch: 78%; font-variation-settings: "wdth" 78, "opsz" 96; }
+h2 { font-size: clamp(32px, 4.6vw, 54px); line-height: 1; font-variation-settings: "wdth" 80, "opsz" 72; }
+h3 { font-size: 26px; line-height: 1.1; font-variation-settings: "wdth" 85, "opsz" 32; }
+p { margin: 0; max-width: 62ch; }
+.lede { font-size: 19px; color: var(--muted); line-height: 1.55; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eyebrow b { color: var(--accent); font-weight: 500; }
+.small { font-size: 14px; color: var(--muted); }
+.mono { font-family: var(--mono); }
+
+/* ---------- nav ---------- */
+nav { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 700 20px/1 var(--display); font-variation-settings: "wdth" 80; letter-spacing: -0.01em; }
+.mark { width: 28px; height: 28px; border-radius: 8px; background: #1b2239; display: grid; align-content: center; gap: 2.5px; padding: 0 6px; }
+.mark i { display: block; height: 2.5px; border-radius: 2px; background: #c9cedb; }
+.mark i:first-child { background: #ff6159; width: 55%; }
+.mark i:nth-child(3) { width: 75%; opacity: .6; }
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font: 600 15px/1 var(--body); padding: 13px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); transition: transform .15s ease, background .15s; }
+.btn:hover { background: var(--raise); }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--fg); color: var(--bg); border-color: transparent; }
+.btn.primary:hover { opacity: .9; background: var(--fg); }
+.btn svg { width: 16px; height: 16px; }
+
+/* ---------- hero ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; padding-block: 40px 96px; }
+.hero-copy { display: grid; gap: 28px; min-width: 0; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 400 13px/1.4 var(--mono); color: var(--faint); }
+.meta span::before { content: "· "; }
+.meta span:first-child::before { content: ""; }
+
+.phone-wrap { display: flex; justify-content: center; min-width: 0; }
+.phone { --pz: .74; zoom: var(--pz); width: 402px; height: 874px; border-radius: 62px; padding: 0; position: relative; overflow: hidden;
+  box-shadow: 0 0 0 11px #16171b, 0 0 0 12px #2c2e35, 0 40px 120px -20px rgba(0,0,0,.6);
+  background: radial-gradient(120% 70% at 15% 10%, var(--wall-a), transparent 60%), radial-gradient(90% 60% at 90% 85%, var(--wall-b), transparent 60%), var(--wall-c);
+  margin: 12px; }
+.phone .status { height: 62px; display: flex; justify-content: space-between; align-items: center; padding: 8px 34px 0 50px; color: #fff; font: 600 17px/1 -apple-system, system-ui, sans-serif; }
+.phone .island { position: absolute; top: 11px; left: 50%; translate: -50% 0; width: 124px; height: 36px; border-radius: 20px; background: #000; }
+.phone .status svg { height: 13px; fill: #fff; }
+.home { display: grid; grid-template-columns: 170px 170px; gap: 24px; padding: 6px 19px; }
+.home .span2 { grid-column: span 2; }
+
+/* ---------- sections ---------- */
+section { padding-block: 96px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 18px; margin-bottom: 48px; }
+
+/* problem */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.compare figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 32px 24px 22px; display: grid; gap: 20px; justify-items: center; min-width: 0; }
+.compare figcaption { display: flex; justify-content: space-between; align-items: baseline; width: 100%; gap: 12px; flex-wrap: wrap; }
+.count { font: 600 44px/1 var(--display); font-variation-settings: "wdth" 75; letter-spacing: -0.02em; }
+.count small { font: 400 14px/1 var(--body); color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+.compare .dense .count { color: var(--accent); }
+.problem-points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 56px; }
+.problem-points div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.problem-points h4 { margin: 0; font: 600 16px/1.3 var(--body); }
+.problem-points p { color: var(--muted); font-size: 15px; }
+
+/* widget showcase */
+.feature { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; align-items: center; padding-block: 56px; }
+.feature + .feature { border-top: 1px dashed var(--line); }
+.feature-copy { display: grid; gap: 18px; min-width: 0; }
+.feature-copy p { color: var(--muted); }
+.taps { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 10px; }
+.taps li { display: grid; grid-template-columns: 76px minmax(0,1fr); gap: 14px; font-size: 15px; align-items: baseline; }
+.taps .k { font: 500 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--faint); }
+.stage { --z: .78; background: radial-gradient(100% 90% at 20% 0%, var(--wall-a), transparent 70%), radial-gradient(80% 80% at 100% 100%, var(--wall-b), transparent 70%), var(--wall-c); border-radius: 28px; padding: 32px; display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; align-items: flex-start; min-width: 0; }
+.stage > * { zoom: var(--z); }
+.month-stage { --z: .68; align-items: flex-end; }
+.stage .col { display: grid; gap: 22px; }
+.lock { width: 172px; height: 76px; color: #fff; padding: 6px 4px; font-family: -apple-system, system-ui, sans-serif; display: grid; align-content: start; gap: 1px; }
+.lock .lt { font: 700 13px/1.25 -apple-system, system-ui, sans-serif; display: flex; gap: 4px; align-items: center; }
+.lock .li { font: 400 13px/1.3 -apple-system, system-ui, sans-serif; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 5px; align-items: center; }
+.lock .li i { width: 9px; height: 9px; border: 1.3px solid currentColor; border-radius: 50%; flex: none; }
+.lock-frame { display: grid; gap: 10px; justify-items: center; padding: 18px 20px; border-radius: 26px; background: rgba(0,0,0,.25); }
+.lock-frame .clock { font: 700 64px/1 -apple-system, system-ui, sans-serif; color: rgba(255,255,255,.92); letter-spacing: -0.02em; }
+.lock-frame .date { font: 600 16px/1 -apple-system, system-ui, sans-serif; color: rgba(255,255,255,.8); }
+
+/* quotes */
+.quotes-head { display: grid; gap: 12px; margin-bottom: 40px; }
+.quotes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.quotes li { margin: 0; }
+.quotes figure { margin: 0; height: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px 24px 20px; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; min-width: 0; }
+.quotes .qm { font: 700 56px/0.6 var(--display); color: var(--accent); height: 24px; }
+.quotes blockquote { margin: 0; font: 500 clamp(19px, 1.9vw, 22px)/1.32 var(--display); font-variation-settings: "wdth" 88, "opsz" 32; letter-spacing: -0.01em; text-wrap: pretty; }
+.quotes figcaption { display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); min-width: 0; }
+.quotes .av { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 13px/1 var(--body); color: #fff; background: var(--c); }
+.quotes .who { display: grid; gap: 3px; min-width: 0; }
+.quotes .who b { font: 600 14px/1.2 var(--body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quotes .who span { font: 400 12px/1 var(--mono); color: var(--faint); }
+@media (max-width: 900px) { .quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .quotes { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; margin-inline: -16px; padding: 0 16px 6px; scrollbar-width: none; }
+  .quotes::-webkit-scrollbar { display: none; }
+  .quotes li { flex: 0 0 82%; scroll-snap-align: center; }
+}
+
+/* looks */
+.looks-head { display: grid; gap: 14px; margin-bottom: 40px; }
+.looks-head .lede { max-width: 46ch; }
+.looks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.looks figure { margin: 0; display: grid; gap: 12px; min-width: 0; }
+.looks { align-items: start; }
+.looks .stage { --z: .8; padding: 0 12px; align-items: center; height: calc(170px * var(--z) + 52px); }
+.looks figcaption { display: grid; gap: 2px; padding-left: 4px; }
+.looks figcaption b { font: 600 16px/1.3 var(--body); }
+.looks figcaption span { font-size: 14px; color: var(--muted); }
+.looks figcaption .set { font: 400 12px/1.5 var(--mono); color: var(--faint); margin-top: 4px; }
+
+/* sources + privacy */
+.sources { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.sources span { font: 500 14px/1 var(--body); padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); display: inline-flex; gap: 8px; align-items: center; }
+.sources i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.privacy { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; align-items: start; }
+.facts { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.facts div { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 20px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.facts dt { font: 600 16px/1.4 var(--body); margin: 0; }
+.facts dd { margin: 0; color: var(--muted); font-size: 15px; }
+
+/* faq */
+.faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 48px; }
+.faq div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.faq h4 { margin: 0; font: 600 17px/1.35 var(--body); }
+.faq p { color: var(--muted); font-size: 15px; }
+
+/* final */
+.final { text-align: left; display: grid; gap: 28px; padding-block: 120px 96px; }
+.final h2 { font-size: clamp(40px, 6.4vw, 80px); font-variation-settings: "wdth" 76, "opsz" 96; max-width: 14ch; }
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; color: var(--muted); font-size: 14px; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- widget renderer (mirrors Dense's SwiftUI layout, 1px = 1pt) ---------- */
+.wg { position: relative; border-radius: 22px; overflow: hidden; background: linear-gradient(var(--w1), var(--w2)); color: var(--p); font-family: var(--wf); flex: none; }
+.wg .col-wrap { position: absolute; inset: 0; display: flex; gap: 14px; padding: var(--vp) 12px; }
+.wg .acol { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.wg .hdr { text-transform: uppercase; white-space: nowrap; overflow: hidden; display: flex; align-items: flex-end; }
+.wg .row { display: flex; align-items: center; gap: 5px; white-space: nowrap; min-width: 0; }
+.wg .row .t { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.wg .tm { font-variant-numeric: tabular-nums; flex: none; }
+.wg .bar { flex: none; border-radius: 1.25px; width: 2.5px; }
+.wg .dot { flex: none; border-radius: 50%; }
+.wg .allday { border-radius: 4px; padding: 0 5px; display: flex; align-items: center; gap: 5px; }
+.wg .rem { position: absolute; inset: 0; padding: var(--vp) 12px; display: flex; flex-direction: column; }
+.wg .rh { display: flex; align-items: baseline; gap: 4px; justify-content: space-between; }
+.wg .rr { display: flex; align-items: center; min-width: 0; }
+.wg .circ { flex: none; border: 0; background: none; padding: 0; display: flex; align-items: center; cursor: pointer; color: inherit; height: 100%; }
+.wg .circ svg { display: block; }
+.wg .rt { display: flex; align-items: baseline; gap: 3px; min-width: 0; flex: 1; white-space: nowrap; }
+.wg .rt .t { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.wg .rt .due { margin-left: auto; flex: none; font-variant-numeric: tabular-nums; }
+.wg .rt .rep { flex: none; margin-left: auto; }
+.wg .rt .rep + .due { margin-left: 0; }
+.wg .month { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.wg .mgrid { padding: 12px 12px 0; }
+.wg .mtitle { height: 19px; display: flex; gap: 5px; align-items: flex-start; font-size: 15px; }
+.wg .wk, .wg .wr { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.wg .wk span { height: 14px; display: grid; place-items: center; font-size: 9px; }
+.wg .cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+.wg .num { display: grid; place-items: center; border-radius: 50%; font-variant-numeric: tabular-nums; }
+.wg .mdots { display: flex; gap: 2px; align-items: center; }
+.wg .mdots i { border-radius: 50%; }
+.wg .lower { position: relative; flex: 1; }
+.wg .lower > div { position: absolute; left: 0; right: 0; }
+.stock { position: relative; border-radius: 22px; overflow: hidden; background: #1c1c1e; color: #fff; font-family: -apple-system, system-ui, sans-serif; padding: 16px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 14px; }
+.stock .day { font: 600 12px/1 inherit; color: #ff453a; text-transform: uppercase; letter-spacing: .02em; }
+.stock .big { font: 300 40px/1.05 -apple-system, system-ui, sans-serif; margin-top: 4px; }
+.stock .ev { border-left: 3px solid var(--c); padding-left: 7px; display: grid; gap: 1px; margin-bottom: 10px; }
+.stock .ev b { font: 600 13px/1.25 -apple-system, system-ui, sans-serif; }
+.stock .ev span { font: 400 12px/1.25 -apple-system, system-ui, sans-serif; color: rgba(235,235,245,.6); }
+
+
+/* ---------- simplified layout ---------- */
+.sec-title { margin-bottom: 40px; }
+.hero { padding-block: 32px 80px; }
+.hero h1 { font-size: clamp(48px, 8vw, 104px); }
+.hero-copy { gap: 24px; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.gallery figure { margin: 0; display: grid; gap: 14px; min-width: 0; }
+.gallery .stage { --z: .74; padding: 28px 12px; aspect-ratio: 1 / 1.05; align-items: center; align-content: center; max-width: 100%; }
+.gallery figcaption { display: grid; gap: 2px; padding-left: 4px; }
+.gallery figcaption b { font: 600 17px/1.3 var(--body); }
+.gallery figcaption span { font-size: 14px; color: var(--muted); }
+.sizes-note { margin: 32px auto 0; text-align: center; color: var(--muted); font-size: 15px; max-width: 60ch; text-wrap: balance; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.trio div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.trio .small { max-width: 30ch; }
+.big-word { font: 600 clamp(28px, 3.4vw, 40px)/1 var(--display); font-variation-settings: "wdth" 78, "opsz" 72; letter-spacing: -0.02em; }
+.final { padding-block: 112px 88px; }
+@media (max-width: 1060px) { .gallery .stage { --z: .6; } .looks .stage { --z: .66; } }
+@media (max-width: 900px) { .looks { grid-template-columns: repeat(2, minmax(0, 1fr)); } .looks .stage { --z: .74; } }
+@media (max-width: 680px) { .looks { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin: 0 auto; } .looks .stage { --z: .86; } }
+@media (max-width: 420px) { .looks .stage { --z: .78; } }
+@media (max-width: 370px) { .looks .stage { --z: .7; } }
+@media (max-width: 900px) {
+  .gallery { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin: 0 auto; }
+  .gallery .stage { --z: .8; aspect-ratio: auto; }
+  .trio { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
+@media (max-width: 640px) { .gallery .stage { --z: .7; } }
+@media (max-width: 380px) { .gallery .stage { --z: .62; } }
+
+@media (max-width: 900px) {
+  .hero, .feature, .privacy { grid-template-columns: minmax(0, 1fr); }
+  .hero { padding-block: 16px 72px; gap: 40px; }
+  .feature { gap: 32px; }
+  .feature.flip .feature-copy { order: -1; }
+  .problem-points, .faq { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  section { padding-block: 72px; }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+  .compare figure > .zoomer { zoom: .74; }
+  .phone { --pz: .66; }
+  .stage { --z: .66; padding: 20px 10px; border-radius: 22px; }
+  .month-stage { --z: .62; }
+  .facts div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (max-width: 380px) { .phone { --pz: .6; } .stage { --z: .6; } .compare figure > .zoomer { zoom: .66; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#top" aria-label="Dense"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Dense</a>
+    <a class="btn" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener">Join the beta</a>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-copy">
+      <h1>Every event.<br><em>Every reminder.</em></h1>
+      <p class="lede">Compact widgets for the Calendar and Reminders apps you already use.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M11.2 8.4c0-1.6 1.3-2.3 1.4-2.4-.8-1.1-1.9-1.3-2.3-1.3-1-.1-1.9.6-2.4.6s-1.3-.6-2.1-.6C4.6 4.7 3.6 5.3 3 6.3c-1.2 2.1-.3 5.1.9 6.8.6.8 1.2 1.7 2.1 1.7.8 0 1.2-.5 2.2-.5s1.3.5 2.2.5c.9 0 1.5-.8 2-1.7.6-.9.9-1.8.9-1.9 0 0-1.9-.7-2.1-2.8zM9.6 3.6c.4-.6.8-1.3.7-2.1-.7 0-1.5.5-2 1-.4.5-.8 1.3-.7 2 .8.1 1.5-.4 2-.9z"/></svg>
+          Join the beta</a>
+      </div>
+      <div class="meta"><span>Free</span><span>iPhone</span><span>No account</span></div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone" role="img" aria-label="An iPhone Home Screen with four Dense widgets: a medium calendar, small Today and Groceries reminders lists, and a large month view.">
+        <div class="island"></div>
+        <div class="status"><span>9:41</span><svg viewBox="0 0 64 13" aria-hidden="true"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/><path d="M30 3.2a10 10 0 0 1 13 0l-1.3 1.4a8 8 0 0 0-10.4 0zM32.6 6a6 6 0 0 1 7.8 0L39 7.4a4 4 0 0 0-5 0zM36.5 12.5 34.6 10a2.6 2.6 0 0 1 3.8 0z"/><rect x="47" y=".5" width="15" height="12" rx="3.5" fill="none" stroke="#fff" opacity=".5"/><rect x="48.6" y="2.1" width="11.8" height="8.8" rx="2"/></svg></div>
+        <div class="home">
+          <div class="span2" data-w="calendar" data-size="medium" data-theme-w="midnight"></div>
+          <div data-w="reminders" data-size="small" data-theme-w="graphite"></div>
+          <div data-w="reminders" data-size="small" data-theme-w="graphite" data-list="groceries"></div>
+          <div class="span2" data-w="month" data-size="large" data-theme-w="midnight"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="problem">
+    <h2 class="sec-title">Same space. More of your day.</h2>
+    <div class="compare">
+      <figure>
+        <div class="zoomer"><div class="stock" style="width:364px;height:170px" aria-hidden="true">
+          <div><div class="day">Monday</div><div class="big">2</div></div>
+          <div>
+            <div class="ev" style="--c:#1badf8"><b>Team standup</b><span>9:30 – 10:00</span></div>
+            <div class="ev" style="--c:#1badf8"><b>Design review</b><span>11:00 – 12:00</span></div>
+          </div>
+        </div></div>
+        <figcaption><span class="small">Stock widget</span><span class="count">2<small>events</small></span></figcaption>
+      </figure>
+      <figure class="dense">
+        <div class="zoomer"><div data-w="calendar" data-size="medium" data-theme-w="auto"></div></div>
+        <figcaption><span class="small">Dense</span><span class="count" id="denseCount">–<small id="denseDays">events</small></span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="widgets">
+    <h2 class="sec-title">Three widgets.</h2>
+    <div class="gallery">
+      <figure><div class="stage"><div data-w="calendar" data-size="large" data-theme-w="midnight"></div></div><figcaption><b>Calendar</b><span>The week ahead, packed in</span></figcaption></figure>
+      <figure><div class="stage"><div data-w="reminders" data-size="large" data-theme-w="graphite"></div></div><figcaption><b>Reminders</b><span>Check things off from the widget</span></figcaption></figure>
+      <figure><div class="stage"><div data-w="month" data-size="large" data-theme-w="midnight"></div></div><figcaption><b>Month</b><span>The month, plus what’s next</span></figcaption></figure>
+    </div>
+    <p class="sizes-note">Calendar and Reminders come in small, medium and large. Month fills a large or 4×6 slot, and Reminders also fits on the Lock Screen.</p>
+  </section>
+
+  <section id="quotes">
+    <div class="quotes-head">
+      <h2>Testers love it.</h2>
+      <p class="lede">Dense’s beta went out on Reddit. Here’s what people said.</p>
+    </div>
+    <ul class="quotes">
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>Absolutely love it. … Downloaded all of the other options in this post and stuck with yours!</blockquote><figcaption><span class="av" style="--c:#5e8cff" aria-hidden="true">C</span><span class="who"><b>u/Coloradodreaming1113</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>I instantly did install. It’s great, an absolute improvement over anything I had!</blockquote><figcaption><span class="av" style="--c:#e0559a" aria-hidden="true">R</span><span class="who"><b>u/RealRroseSelavy</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>I really really really really like this!! … It’s the best one I tried yet.</blockquote><figcaption><span class="av" style="--c:#9b6cf0" aria-hidden="true">E</span><span class="who"><b>u/eluq</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>This is incredible!! Thank you for making this!</blockquote><figcaption><span class="av" style="--c:#2fb67c" aria-hidden="true">P</span><span class="who"><b>u/pearsintensely</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>Not all heroes wear capes!</blockquote><figcaption><span class="av" style="--c:#f08a3c" aria-hidden="true">I</span><span class="who"><b>u/i4k20z3</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+      <li><figure><span class="qm" aria-hidden="true">“</span><blockquote>I absolutely love this!</blockquote><figcaption><span class="av" style="--c:#e2493f" aria-hidden="true">T</span><span class="who"><b>u/_tribecalledquest</b><span>Beta tester on Reddit</span></span></figcaption></figure></li>
+    </ul>
+  </section>
+
+  <section id="looks">
+    <div class="looks-head">
+      <h2>Make it yours.</h2>
+      <p class="lede">Dense looks good as it comes. If you want, change how it looks, reads and fills the space. Calendar and Reminders each keep their own look.</p>
+    </div>
+    <div class="looks">
+      <figure><div class="stage"><div data-w="calendar" data-size="medium" data-theme-w="frost" data-marker="block"></div></div><figcaption><b>Color</b><span>Six themes, and four ways to show each calendar’s color.</span><span class="set">Theme: Frost · Color Style: Block</span></figcaption></figure>
+      <figure><div class="stage"><div data-w="calendar" data-size="medium" data-theme-w="midnight" data-font="rounded" data-size-pt="13"></div></div><figcaption><b>Text</b><span>Four fonts, any size. Smaller and condensed fit more.</span><span class="set">Font: Rounded · Text Size: 13 pt</span></figcaption></figure>
+      <figure><div class="stage"><div data-w="calendar" data-size="medium" data-theme-w="midnight" data-columns="todayLater" data-earlier="1"></div></div><figcaption><b>Layout</b><span>Fill both columns, keep today on its own, or use one.</span><span class="set">Columns: Today | Later · Earlier Events Today</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section id="trust">
+    <h2 class="sec-title">Works with what you already use.</h2>
+    <div class="trio">
+      <div><span class="big-word">Your accounts</span><span class="small">iCloud, Google, Exchange: whatever is in Calendar and Reminders.</span></div>
+      <div><span class="big-word">Your calendar app</span><span class="small">A tap opens Calendar, Google Calendar, Fantastical, BusyCal or Notion Calendar.</span></div>
+      <div><span class="big-word">Your data</span><span class="small">Stays on your iPhone. No account, no ads, no tracking.</span></div>
+    </div>
+  </section>
+
+  <section class="final">
+    <h2>Your week, at a glance.</h2>
+    <div class="cta-row">
+      <a class="btn primary" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener">Join the beta</a>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://approximate.work/">← approximate.work</a>
+    <a href="mailto:dense@approximate.work">dense@approximate.work</a>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // ---------- mock data: Monday 2 November 2026, 9:41 ----------
+  const NOW = 9 * 60 + 41;
+  const DAY0 = new Date(2026, 10, 2);
+  const C = { blue: "#1badf8", purple: "#cc73e1", orange: "#ff9500", green: "#63da38", yellow: "#ffcc00", red: "#ff2968", teal: "#40c8e0", brown: "#a2845e" };
+  const t = s => { const [h, m] = s.split(":").map(Number); return h * 60 + m; };
+  const E = (d, s, e, title, color, o = {}) => ({ d, s: t(s), e: t(e), title, color: C[color], ...o });
+  const A = (d, d2, title, color) => ({ d, d2, allDay: true, title, color: C[color] });
+  const EVENTS = [
+    A(0, 0, "Mum’s birthday", "purple"),
+    E(0, "07:30", "08:15", "Morning run", "green"),
+    E(0, "09:30", "10:00", "Team standup", "blue"),
+    E(0, "11:00", "12:00", "Design review", "blue"),
+    E(0, "13:00", "14:00", "Lunch with Sam", "orange"),
+    E(0, "15:30", "16:00", "1:1 with Alex", "blue"),
+    E(0, "16:30", "17:00", "Vendor call", "blue"),
+    E(0, "18:30", "19:30", "Gym", "green"),
+    E(0, "20:30", "22:30", "Dinner at Elena’s", "orange"),
+    E(1, "08:00", "09:00", "Dentist", "yellow"),
+    E(1, "10:00", "11:30", "Quarterly planning", "blue"),
+    E(1, "12:30", "13:00", "Pick up passport", "red"),
+    E(1, "17:30", "18:30", "Coffee with Nikos", "orange"),
+    A(2, 4, "Athens", "teal"),
+    E(2, "07:15", "10:40", "Flight to Athens", "teal"),
+    E(2, "19:00", "21:30", "Dinner with family", "purple"),
+    E(3, "10:00", "12:00", "Acropolis Museum", "green"),
+    E(3, "21:00", "23:00", "Rooftop drinks", "orange"),
+    E(4, "11:30", "13:00", "Brunch with Maria", "orange"),
+    E(5, "16:40", "19:55", "Flight home", "teal"),
+    E(6, "10:00", "11:00", "Farmers market", "green"),
+  ];
+  // Dots for the rest of the month (day of November → calendar colors).
+  const MONTH_EXTRA = {
+    1: ["purple"], 9: ["blue", "blue", "orange"], 10: ["blue", "green"], 11: ["blue"], 12: ["blue", "blue", "orange", "green"],
+    13: ["red"], 16: ["blue", "blue"], 17: ["blue", "yellow"], 18: ["blue", "orange", "green"], 19: ["blue"], 20: ["purple", "orange"],
+    23: ["blue", "blue"], 24: ["blue"], 25: ["orange", "purple"], 26: ["red", "purple", "orange"], 27: ["red"], 30: ["blue", "blue", "green"],
+    // past days
+    // (shown dimmed)
+  };
+  const L = { personal: "#0a84ff", groceries: "#ff9f0a", home: "#30d158", work: "#bf5af2" };
+  const REMINDERS = [
+    { title: "Call the bank", list: "personal", due: "Yesterday", overdue: true },
+    { title: "Renew passport", list: "personal", due: "Today", marks: "!!" },
+    { title: "Buy milk", list: "groceries" },
+    { title: "Send invoice to Lena", list: "work", due: "11:00" },
+    { title: "Book table for Friday", list: "work", due: "12:00" },
+    { title: "Pick up dry cleaning", list: "home", due: "17:00" },
+    { title: "Water the plants", list: "home", due: "Today", repeat: true },
+    { title: "Pay rent", list: "personal", due: "Today", repeat: true },
+    { title: "Oat milk & coffee beans", list: "groceries" },
+    { title: "Return library books", list: "home", due: "18:00" },
+    { title: "Plan Athens itinerary", list: "personal" },
+  ].map((r, i) => ({ ...r, id: i, done: false }));
+  const GROCERIES = ["Buy milk", "Oat milk & coffee beans", "Eggs", "Sourdough", "Tomatoes", "Feta", "Olive oil"]
+    .map((title, i) => ({ title, list: "groceries", id: 100 + i, done: false }));
+
+  // ---------- themes and type, from SharedSettings.swift ----------
+  const THEMES = {
+    auto: { name: "Auto", dark: ["#1c1c1f", "#131315"], light: ["#ffffff", "#f5f5f7"] },
+    paper: { name: "Paper", dark: ["#23211d", "#191815"], light: ["#fcfaf5", "#f2ede3"] },
+    frost: { name: "Frost", scheme: "light", light: ["#f2f5f9", "#e2e7ee"] },
+    graphite: { name: "Graphite", scheme: "dark", dark: ["#323237", "#232327"] },
+    midnight: { name: "Midnight", scheme: "dark", dark: ["#1b2239", "#0e1324"] },
+    black: { name: "Black", scheme: "dark", dark: ["#000000", "#000000"] },
+  };
+  const ACCENTS = { red: ["#eb332b", "#ff6159"], orange: ["#ed7300", "#ff9e40"], blue: ["#006bf2", "#66a6ff"], purple: ["#8040d9", "#bf8cff"], mono: null };
+  const FONTS = {
+    system: '-apple-system, "SF Pro Text", system-ui, "Segoe UI", sans-serif',
+    rounded: 'ui-rounded, "SF Pro Rounded", "Nunito", -apple-system, system-ui, sans-serif',
+    serif: 'ui-serif, "New York", "Iowan Old Style", Georgia, serif',
+    mono: 'ui-monospace, "SF Mono", Menlo, "Geist Mono", monospace',
+  };
+  const WEIGHT = { light: [300, 500], regular: [400, 600], medium: [500, 600], semibold: [600, 700] };
+  const SIZES = { small: [170, 170], medium: [364, 170], large: [364, 382], xl: [364, 592] };
+
+  const pageDark = () => {
+    const a = document.documentElement.getAttribute("data-theme");
+    if (a) return a === "dark";
+    return !matchMedia("(prefers-color-scheme: light)").matches;
+  };
+
+  function styleFor(o) {
+    const th = THEMES[o.theme];
+    const dark = th.scheme ? th.scheme === "dark" : pageDark();
+    const [w1, w2] = dark ? th.dark : th.light;
+    const acc = ACCENTS[o.accent];
+    return {
+      ...o, dark, w1, w2,
+      p: dark ? "#ffffff" : "#000000",
+      s: dark ? "rgba(235,235,245,.6)" : "rgba(60,60,67,.6)",
+      ter: dark ? "rgba(235,235,245,.3)" : "rgba(60,60,67,.3)",
+      bgSys: dark ? "#000" : "#fff",
+      red: dark ? "#ff453a" : "#ff3b30",
+      accentC: acc ? acc[dark ? 1 : 0] : (dark ? "#ffffff" : "#000000"),
+      w: WEIGHT[o.weight][0], we: WEIGHT[o.weight][1],
+      family: FONTS[o.font],
+    };
+  }
+
+  const el = (tag, css, text) => { const n = document.createElement(tag); if (css) n.style.cssText = css; if (text != null) n.textContent = text; return n; };
+  const fontCss = (st, size, weight) => `font-family:${st.family};font-size:${size}px;font-weight:${weight};${st.condensed ? "font-stretch:condensed;letter-spacing:-0.025em;" : ""}`;
+  const tintC = (st, c, by) => st.dark ? c : `color-mix(in srgb, ${c}, #000 ${by}%)`;
+  // Tint and Block color titles; on a dark block, lighten them off their own color.
+  const titleC = (st, c) => st.marker === "text" ? tintC(st, c, 28)
+    : st.marker === "block" ? (st.dark ? `color-mix(in srgb, ${c}, #fff 35%)` : tintC(st, c, 28)) : st.p;
+  const hhmm = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  const measure = (() => { const cv = document.createElement("canvas").getContext("2d"); return (txt, st, size) => { cv.font = `${st.w} ${size}px ${st.family}`; return Math.ceil(cv.measureText(txt).width * (st.condensed ? 0.9 : 1)) + 1; }; })();
+
+  function frame(st, size) {
+    const [w, h] = SIZES[size];
+    const n = el("div", `width:${w}px;height:${h}px;--w1:${st.w1};--w2:${st.w2};--p:${st.p};--wf:${st.family}`);
+    n.className = "wg";
+    return { n, w, h };
+  }
+
+  // ---------- Dense Calendar (AgendaView.swift) ----------
+  function dayTitle(off) {
+    const d = new Date(DAY0); d.setDate(d.getDate() + off);
+    const wd = d.toLocaleDateString("en-GB", { weekday: "short" });
+    if (off === 0) return `Today · ${wd} ${d.getDate()}`;
+    if (off === 1) return "Tomorrow";
+    return `${wd} ${d.getDate()} ${d.toLocaleDateString("en-GB", { month: "short" })}`;
+  }
+  function agendaRows(from, daysAhead, earlier) {
+    const rows = [];
+    for (let off = from; off < daysAhead; off++) {
+      const allDay = EVENTS.filter(e => e.allDay && e.d <= off && e.d2 >= off);
+      const timed = EVENTS.filter(e => !e.allDay && e.d === off && (off > 0 || e.e > NOW || earlier));
+      if (!allDay.length && !timed.length) continue;
+      rows.push({ type: "header", title: dayTitle(off), today: off === 0, day: off });
+      allDay.forEach(e => rows.push({ type: "event", e, day: off }));
+      timed.forEach(e => rows.push({ type: "event", e, day: off, past: off === 0 && e.e <= NOW }));
+    }
+    return rows;
+  }
+  function agendaMetrics(st) {
+    const f = st.fontSize, ls = st.lineSpacing;
+    const headerFs = Math.max(7, f - 2);
+    return { f, ls, timeFs: Math.max(7, f - 1), headerFs, eventH: Math.ceil(f * 1.25 + ls), headerGap: Math.max(3, ls + 2), headerH: Math.ceil(headerFs * 1.3) + 1 };
+  }
+  const rowH = (M, r, first) => r.type === "header" ? M.headerH + (first ? 0 : M.headerGap) : M.eventH;
+  function layoutAgenda(rows, M, available, columns) {
+    const h = (r, first) => rowH(M, r, first);
+    const result = []; let i = 0, lastHeader = null;
+    for (let c = 0; c < columns; c++) {
+      const col = []; let used = 0;
+      if (i < rows.length && rows[i].type !== "header" && lastHeader) { col.push(lastHeader); used += h(lastHeader, true); }
+      while (i < rows.length) {
+        const r = rows[i], rh = h(r, col.length === 0);
+        if (used + rh > available + 0.5) break;
+        col.push(r); used += rh; if (r.type === "header") lastHeader = r; i++;
+      }
+      while (col.length && col[col.length - 1].type === "header") { col.pop(); i--; }
+      result.push(col);
+    }
+    return { columns: result, overflowed: i < rows.length, shown: result.flat().filter(r => r.type === "event").length };
+  }
+  function agendaInto(host, st, w, h, vp, from = 0) {
+    const M = agendaMetrics(st);
+    const rows = agendaRows(from, 7, st.earlier);
+    const available = h - vp * 2;
+    let L;
+    if (w >= 260 && st.columns === "todayLater") {
+      // Today on the left, ending with "+N more"; the days after on the right.
+      const today = rows.filter(r => r.day === 0);
+      const left = layoutAgenda(today, M, available, 1).columns[0];
+      const total = today.filter(r => r.type === "event").length;
+      if (left.filter(r => r.type === "event").length < total) {
+        const used = () => left.reduce((a, r, i) => a + rowH(M, r, i === 0), 0);
+        while (left.length > 1 && used() + M.eventH > available + 0.5) left.pop();
+        left.push({ type: "more", n: total - left.filter(r => r.type === "event").length });
+      }
+      const right = layoutAgenda(rows.filter(r => r.day > 0), M, available, 1).columns[0];
+      L = { columns: [left, right], shown: [...left, ...right].filter(r => r.type === "event").length };
+    } else {
+      const L1 = layoutAgenda(rows, M, available, 1);
+      L = w >= 260 && st.columns !== "one" && L1.overflowed ? layoutAgenda(rows, M, available, 2) : L1;
+    }
+    const wrap = el("div", `--vp:${vp}px`); wrap.className = "col-wrap";
+    const timeW = measure("00:00", st, M.timeFs);
+    L.columns.forEach(col => {
+      const c = el("div"); c.className = "acol";
+      col.forEach((r, idx) => {
+        if (r.type === "header") {
+          const n = el("div", `${fontCss(st, M.headerFs, st.we)}height:${M.headerH}px;margin-top:${idx === 0 ? 0 : M.headerGap}px;letter-spacing:${st.font === "mono" ? 0 : 0.6}px;color:${r.today ? st.accentC : st.s}`, r.title);
+          n.className = "hdr"; c.append(n); return;
+        }
+        if (r.type === "more") {
+          c.append(el("div", `${fontCss(st, M.timeFs, st.w)}height:${M.eventH}px;display:flex;align-items:center;color:${st.s}`, `+${r.n} more`)); return;
+        }
+        const e = r.e;
+        const row = el("div", `height:${M.eventH}px;opacity:${(e.declined ? .45 : 1) * (r.past ? .4 : 1)};`); row.className = "row";
+        const blockH = Math.max(M.f * 1.25, M.eventH - Math.max(1, M.ls * 0.6));
+        if (e.allDay) {
+          const band = el("div", `height:${blockH}px;background:color-mix(in srgb, ${e.color} ${st.dark ? 24 : 15}%, transparent);flex:1;min-width:0`);
+          band.className = "allday";
+          const sz = Math.max(4, M.f * 0.42);
+          if (st.marker === "bar" || st.marker === "dot") { const d = el("i", `width:${sz}px;height:${sz}px;background:${e.color}`); d.className = "dot"; band.append(d); }
+          const tt = el("span", `${fontCss(st, M.f, st.we)}color:${titleC(st, e.color)}`, e.title); tt.className = "t";
+          band.append(tt); row.append(band);
+        } else {
+          const ongoing = e.d === 0 && e.s <= NOW && e.e > NOW;
+          if (st.marker === "bar") { const b = el("i", `height:${Math.round(M.f * 1.05)}px;background:${e.color}`); b.className = "bar"; row.append(b); }
+          if (st.marker === "dot") { const sz = Math.max(4, M.f * 0.42); const d = el("i", `width:${sz}px;height:${sz}px;background:${e.color}`); d.className = "dot"; row.append(d); }
+          const tm = el("span", `${fontCss(st, M.timeFs, ongoing ? st.we : st.w)}min-width:${timeW}px;color:${ongoing ? st.accentC : st.s}`, hhmm(e.s)); tm.className = "tm";
+          const tt = el("span", `${fontCss(st, M.f, ongoing ? st.we : st.w)}color:${titleC(st, e.color)};${e.declined ? "text-decoration:line-through;" : ""}`, e.title); tt.className = "t";
+          if (st.marker === "block") {
+            // A soft block of the calendar's color with a full-height bar on its left edge.
+            const blk = el("div", `display:flex;align-items:center;gap:5px;flex:1;min-width:0;height:${blockH}px;padding-right:5px;border-radius:4px;overflow:hidden;background:color-mix(in srgb, ${e.color} ${st.dark ? 16 : 10}%, transparent)`);
+            blk.append(el("i", `flex:none;align-self:stretch;width:3px;border-radius:4px 0 0 4px;background:${e.color}`), tm, tt);
+            row.append(blk);
+          } else row.append(tm, tt);
+        }
+        c.append(row);
+      });
+      wrap.append(c);
+    });
+    host.append(wrap);
+    return L.shown;
+  }
+  function renderCalendar(st, size, from) {
+    const { n, w, h } = frame(st, size);
+    n.setAttribute("role", "img");
+    n.dataset.shown = agendaInto(n, st, w, h, 12, from);
+    n.setAttribute("aria-label", `Dense Calendar widget, ${size}, showing ${n.dataset.shown} events`);
+    return n;
+  }
+
+  // ---------- Dense Reminders (RemindersView.swift) ----------
+  function circleSvg(size, color, done, light) {
+    const sw = light ? 1.1 : 1.5, r = size / 2 - sw;
+    return done
+      ? `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 0.5}" fill="${color}"/><path d="M${size * .3} ${size * .52} L${size * .44} ${size * .66} L${size * .71} ${size * .37}" fill="none" stroke="#fff" stroke-width="${size * .1}" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}"/></svg>`;
+  }
+  function remindersInto(host, st, w, h, vp, list) {
+    const items = list ? GROCERIES : REMINDERS;
+    const f = st.fontSize, ls = st.lineSpacing;
+    const rowH = Math.ceil(f * 1.25 + ls), headerFs = f + 1, headerH = headerFs + 6;
+    const maxRows = Math.max(0, Math.floor((h - vp * 2 - headerH) / rowH));
+    const box = el("div", `--vp:${vp}px`); box.className = "rem";
+    const open = items.filter(r => !r.done).length;
+    const hd = el("div", `height:${headerH}px`); hd.className = "rh";
+    hd.append(el("span", `${fontCss(st, headerFs, 700)}color:${tintC(st, L[list || "personal"], 20)}`, list ? "Groceries" : "Today"));
+    hd.append(el("span", `${fontCss(st, headerFs, st.we)}color:${st.s};font-variant-numeric:tabular-nums`, String(open)));
+    box.append(hd);
+    const overflow = items.length > maxRows;
+    const shown = overflow ? Math.max(0, maxRows - 1) : maxRows;
+    items.slice(0, shown).forEach(r => {
+      const color = L[r.list];
+      const row = el("div", `height:${rowH}px`); row.className = "rr";
+      const b = el("button", `width:${f + 8}px`); b.className = "circ"; b.type = "button";
+      b.setAttribute("aria-label", r.done ? `Mark ${r.title} as not completed` : `Complete ${r.title}`);
+      b.innerHTML = circleSvg(f - 1, color, r.done, st.weight === "light");
+      b.addEventListener("click", ev => { ev.stopPropagation(); r.done = !r.done; renderAll(); });
+      const tx = el("div"); tx.className = "rt";
+      const title = el("span", `${fontCss(st, f, st.w)}color:${r.done ? st.s : (r.overdue && !r.due ? st.red : st.p)}`); title.className = "t";
+      if (r.marks) title.append(el("b", `font-weight:700;color:${r.done ? st.s : tintC(st, color, 20)}`, r.marks + " "));
+      title.append(r.title);
+      tx.append(title);
+      if (r.repeat) { const rp = el("span", `font-size:${Math.max(6, f - 4)}px;color:${st.s};font-weight:700`, "↻"); rp.className = "rep"; tx.append(rp); }
+      if (r.due) { const d = el("span", `${fontCss(st, Math.max(7, f - 2.5), st.w)}color:${r.overdue && !r.done ? st.red : st.s}`, r.due); d.className = "due"; tx.append(d); }
+      row.append(b, tx); box.append(row);
+    });
+    if (overflow && maxRows > 0) box.append(el("div", `${fontCss(st, Math.max(7, f - 1.5), st.w)}color:${st.s};padding-left:${f + 8}px;height:${rowH}px;display:flex;align-items:center`, `+${items.length - shown} more`));
+    host.append(box);
+  }
+  function renderReminders(st, size, list) {
+    const { n, w, h } = frame(st, size);
+    n.setAttribute("aria-label", `Dense Reminders widget, ${size}, ${list ? "Groceries" : "Today"} list`);
+    n.setAttribute("role", "group");
+    remindersInto(n, st, w, h, 12, list);
+    return n;
+  }
+
+  // ---------- Dense Month (MonthView.swift) ----------
+  function renderMonth(st, size) {
+    const { n, w, h } = frame(st, size);
+    n.setAttribute("role", "img");
+    n.setAttribute("aria-label", "Dense Month widget: November 2026 with event dots, upcoming events and Today reminders");
+    const first = new Date(2026, 10, 1), dayCount = 30, lead = first.getDay(); // Sunday-first locale
+    const weeks = Math.ceil((lead + dayCount) / 7);
+    const ch = Math.min(44, Math.max(23, (h * 0.4 - (12 + 19 + 14)) / weeks));
+    const sc = Math.min(ch / 23, 1.3);
+    const m = el("div"); m.className = "month";
+    const g = el("div"); g.className = "mgrid";
+    const ti = el("div"); ti.className = "mtitle";
+    ti.append(el("span", fontCss(st, 15, st.we), "November"), el("span", `${fontCss(st, 15, st.w)}color:${st.s}`, "2026"));
+    const wk = el("div"); wk.className = "wk";
+    ["S", "M", "T", "W", "T", "F", "S"].forEach(s => wk.append(el("span", `${fontCss(st, 9, st.we)}color:${st.s}`, s)));
+    g.append(ti, wk);
+    for (let wkI = 0; wkI < weeks; wkI++) {
+      const wr = el("div"); wr.className = "wr";
+      for (let c = 0; c < 7; c++) {
+        const day = wkI * 7 + c - lead + 1;
+        const cell = el("div", `height:${ch}px`); cell.className = "cell";
+        if (day >= 1 && day <= dayCount) {
+          const off = day - 2, isToday = off === 0, past = off < 0;
+          let colors = off >= 0 && off <= 6 ? EVENTS.filter(e => e.allDay ? (e.d <= off && e.d2 >= off) : e.d === off).map(e => e.color) : (MONTH_EXTRA[day] || []).map(k => C[k]);
+          colors = colors.slice(0, 4);
+          const num = el("span", `${fontCss(st, 11.5 * sc, isToday ? st.we : st.w)}width:${18 * sc}px;height:${18 * sc}px;color:${isToday ? st.bgSys : st.p};${past ? "opacity:.5;" : ""}${isToday ? `background:${st.accentC};` : ""}`, String(day));
+          num.className = "num";
+          const dots = el("div", `height:${4 * sc}px`); dots.className = "mdots";
+          colors.forEach(c2 => dots.append(el("i", `width:${3.5 * sc}px;height:${3.5 * sc}px;background:${c2};${past ? "opacity:.55" : ""}`)));
+          cell.append(num, dots);
+        }
+        wr.append(cell);
+      }
+      g.append(wr);
+    }
+    m.append(g);
+    const lower = el("div"); lower.className = "lower";
+    m.append(lower); n.append(m);
+    const lowerH = h - (12 + 19 + 14 + weeks * ch);
+    const aH = lowerH * 0.56, rH = lowerH * 0.44;
+    const a = el("div", `top:0;height:${aH}px`), r = el("div", `top:${aH}px;height:${rH}px`);
+    lower.append(a, r);
+    agendaInto(a, st, w, aH, 8);
+    remindersInto(r, st, w, rH, 8);
+    return n;
+  }
+
+  // ---------- mount ----------
+  const base = { theme: "midnight", font: "system", weight: "regular", condensed: false, fontSize: 12, lineSpacing: 1, accent: "red", marker: "bar", columns: "fill", earlier: false };
+
+  function build(kind, size, opts, list) {
+    const st = styleFor(opts);
+    if (kind === "reminders") return renderReminders(st, size, list);
+    if (kind === "month") return renderMonth(st, size);
+    return renderCalendar(st, size, 0);
+  }
+  function renderStatic() {
+    document.querySelectorAll("[data-w]").forEach(slot => {
+      const d = slot.dataset;
+      const opts = { ...base, theme: d.themeW || base.theme, marker: d.marker || base.marker, accent: d.accent || base.accent,
+        font: d.font || base.font, weight: d.weight || base.weight, condensed: d.condensed === "1", columns: d.columns || base.columns,
+        earlier: d.earlier === "1", fontSize: Number(d.sizePt || base.fontSize), lineSpacing: Number(d.spacing ?? base.lineSpacing) };
+      const n = build(d.w, d.size, opts, d.list);
+      slot.replaceChildren(n);
+    });
+    const dense = document.querySelector("#problem [data-w] .wg");
+    if (dense) {
+      document.getElementById("denseCount").firstChild.textContent = dense.dataset.shown;
+      document.getElementById("denseDays").textContent = `events, ${new Set([...dense.querySelectorAll(".hdr")].map(h => h.textContent)).size} days`;
+    }
+  }
+  function renderAll() { renderStatic(); }
+
+
+  const rethemes = () => renderAll();
+  matchMedia("(prefers-color-scheme: light)").addEventListener("change", rethemes);
+  new MutationObserver(rethemes).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  renderAll();
+  if (document.fonts) document.fonts.ready.then(renderAll);
+})();
+</script>
+
+</body>
+</html>
