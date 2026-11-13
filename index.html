@@ -238,6 +238,17 @@
     .why dt.itch { color: var(--accent-text); }
     .why dd.itch { color: var(--ink); }
 
+    /* where to get it, for the apps that are out */
+    .app-get {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px dashed var(--rule);
+      font-size: 0.75rem;
+      color: var(--ink3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
     /* TOOLS */
     .tools {
       display: flex;
@@ -352,6 +363,7 @@
     @media (hover: hover) {
       .nav-links a:hover { color: var(--accent-text); }
       a.app-name:hover { border-color: var(--accent-text); }
+      .app-get:hover, .app-get:hover .status { color: var(--accent-text); }
       .app:hover { border-color: color-mix(in srgb, var(--tint) 45%, var(--rule)); }
       a.tool-card:hover, .tool-card:has(.stretched):hover { background: var(--bg); }
       a.tool-card:hover .tool-arrow, .tool-card:has(.stretched):hover .tool-arrow { color: var(--accent-text); transform: translate(2px, -2px); }
@@ -436,6 +448,7 @@
             <dt>fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
             <dt>skipped</dt><dd>Accounts, queues, discovery. It's a bedtime button.</dd>
           </dl>
+          <a class="app-get" href="https://apps.apple.com/us/app/podnap/id6825713803" target="_blank" rel="noopener"><span class="status live">on the App Store</span> &#8599;</a>
         </article>
 
         <article class="app" data-app="dense">
@@ -451,6 +464,7 @@
             <dt>fix</dt><dd>Widgets that fit as much as you can read. Font, size and spacing tuned per widget.</dd>
             <dt>skipped</dt><dd>The calendar app. The widget is the whole point.</dd>
           </dl>
+          <a class="app-get" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener"><span class="status">beta on TestFlight</span> &#8599;</a>
         </article>
 
         <article class="app" data-app="corkpin">

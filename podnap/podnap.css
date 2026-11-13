@@ -172,6 +172,13 @@ ul.features li::before { content: '→'; position: absolute; left: 0; color: var
 .why dt.itch { color: var(--accent-text); }
 .why dd.itch { color: var(--ink); }
 
+.store {
+  display: inline-block; margin-top: 20px; padding: 11px 20px;
+  background: var(--ink); color: var(--bg); border-radius: 999px;
+  text-decoration: none; font-size: 0.8125rem; transition: opacity 0.15s;
+}
+.store:active { opacity: 0.8; }
+
 .mail {
   display: inline-block; margin: 4px 0 12px; padding: 12px 18px;
   background: var(--bg2); border: 1px solid var(--rule); border-radius: 999px;
@@ -188,6 +195,7 @@ footer a { color: var(--ink3); }
 @media (hover: hover) {
   .nav-links a:hover { color: var(--accent-text); }
   .mail:hover { border-color: var(--accent-text); }
+  .store:hover { opacity: 0.88; }
   footer a:hover { color: var(--accent-text); }
 }
 
