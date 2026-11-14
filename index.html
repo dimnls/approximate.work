@@ -3,84 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#F5F7F6" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0C1512" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0B0C0E" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)" />
   <title>approximate.work</title>
   <meta name="description" content="A small collection of things built approximately." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* dark first; light only for people whose system asks for it */
     :root {
-      --bg:      #F5F7F6;
-      --bg2:     #EDF1EF;
-      --ink:     #0F1A17;
-      --ink2:    #3D5248;
-      --ink3:    #566D65;
-      --rule:    #D3DDD9;
-      --accent:  #0ABFA3;
-      --accent-text:    #087D6A; /* accent for small text: 4.7:1 on --bg */
-      --accent-display: #0A9A83; /* accent for large display text: 3.3:1 */
-      --tag-bg:  #E0E8E5;
-      --mono:    'Fragment Mono', ui-monospace, monospace;
+      --bg:      #0B0C0E;
+      --surface: #121317;
+      --raise:   #181A1F;
+      --line:    rgba(255, 255, 255, 0.07);
+      --line2:   rgba(255, 255, 255, 0.13);
+      --ink:     #EDEEF0;
+      --ink2:    #A3A7AF;
+      --ink3:    #6E727B;
+      --accent:  #2FD9BC;
+      --glow:    16%;
+      --shadow:  0 1px 0 rgba(255,255,255,0.03) inset, 0 20px 40px -24px rgba(0,0,0,0.8);
+      --sans:    'Geist', -apple-system, system-ui, sans-serif;
+      --mono:    'Geist Mono', ui-monospace, monospace;
       --display: 'Syne', system-ui, sans-serif;
-      --glow:    13%;
     }
 
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       :root {
-        --bg:      #0C1512;
-        --bg2:     #111D19;
-        --ink:     #E0EDE9;
-        --ink2:    #8AADA5;
-        --ink3:    #6F918A;
-        --rule:    #1E3330;
-        --accent:  #0DD8B8;
-        --accent-text:    #0DD8B8;
-        --accent-display: #0DD8B8;
-        --tag-bg:  #152420;
-        --glow:    17%;
+        --bg:      #F7F7F5;
+        --surface: #FFFFFF;
+        --raise:   #F0F0ED;
+        --line:    rgba(15, 18, 24, 0.08);
+        --line2:   rgba(15, 18, 24, 0.16);
+        --ink:     #111317;
+        --ink2:    #4F545D;
+        --ink3:    #6C717A;
+        --accent:  #0B8A75;
+        --glow:    11%;
+        --shadow:  0 1px 2px rgba(15,18,24,0.04), 0 16px 32px -24px rgba(15,18,24,0.25);
       }
     }
 
     @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+    html { scroll-padding-top: 72px; }
 
     body {
       background: var(--bg);
       color: var(--ink);
-      font-family: var(--mono);
-      font-size: 0.875rem;
-      line-height: 1.7;
+      font-family: var(--sans);
+      font-size: 0.9375rem;
+      line-height: 1.6;
       padding: 0 20px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       -webkit-text-size-adjust: 100%;
+      font-feature-settings: 'ss01', 'cv11';
     }
 
-    .wrap { max-width: 720px; margin: 0 auto; }
-
-    /* faint dot grid behind the hero, fading out as you scroll */
+    /* one soft teal light behind the hero */
     body::before {
       content: '';
       position: absolute;
       inset: 0 0 auto 0;
-      height: 560px;
-      background-image: radial-gradient(var(--rule) 1px, transparent 1.2px);
-      background-size: 20px 20px;
-      -webkit-mask-image: radial-gradient(ellipse 60% 80% at 75% 0%, #000 0%, transparent 70%);
-              mask-image: radial-gradient(ellipse 60% 80% at 75% 0%, #000 0%, transparent 70%);
+      height: 640px;
+      background: radial-gradient(50% 70% at 70% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
       pointer-events: none;
       z-index: -1;
     }
 
+    .wrap { max-width: 720px; margin: 0 auto; }
+
     a { -webkit-tap-highlight-color: transparent; }
-    :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; border-radius: 4px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+    /* small caps labels: the only monospace on the page */
+    .label {
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+    }
 
     /* NAV: sticks to the top, frosted */
     .nav-bar {
@@ -89,19 +101,19 @@
       z-index: 10;
       margin: 0 -20px;
       padding: 0 20px;
-      background: color-mix(in srgb, var(--bg) 80%, transparent);
-      -webkit-backdrop-filter: saturate(1.4) blur(14px);
-              backdrop-filter: saturate(1.4) blur(14px);
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      -webkit-backdrop-filter: saturate(1.6) blur(16px);
+              backdrop-filter: saturate(1.6) blur(16px);
       border-bottom: 1px solid transparent;
       transition: border-color 0.2s;
     }
 
-    .nav-bar.scrolled { border-bottom-color: color-mix(in srgb, var(--rule) 70%, transparent); }
+    .nav-bar.scrolled { border-bottom-color: var(--line); }
 
     nav {
       max-width: 720px;
       margin: 0 auto;
-      height: 56px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -117,58 +129,40 @@
       text-decoration: none;
     }
 
-    .site-name span { color: var(--accent-text); }
+    .site-name span { color: var(--accent); }
 
-    .nav-links { display: flex; gap: 20px; list-style: none; }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
 
     .nav-links a {
       display: inline-block;
-      padding: 0.5rem 0;
-      color: var(--ink3);
+      padding: 6px 10px;
+      border-radius: 8px;
+      color: var(--ink2);
       text-decoration: none;
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
-      transition: color 0.15s;
+      font-size: 0.875rem;
+      transition: color 0.15s, background 0.15s;
     }
 
     /* HERO */
-    .hero { padding: 64px 0 56px; }
+    .hero { padding: 88px 0 72px; }
 
     .hero h1 {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(1.625rem, 7.6vw, 3.5rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
+      font-size: clamp(1.5rem, 7.6vw, 3.75rem);
+      line-height: 1;
+      letter-spacing: -0.045em;
       color: var(--ink);
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
-    .hero h1 em { font-style: normal; color: var(--accent-display); }
+    .hero h1 em { font-style: normal; color: var(--accent); }
 
-    .hero-desc { color: var(--ink2); max-width: 440px; line-height: 1.85; }
+    .hero-desc { font-size: 1.0625rem; color: var(--ink2); max-width: 470px; line-height: 1.6; }
 
     /* SECTION HEADINGS */
-    .section-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 40px 0 20px;
-    }
-
-    .section-head h2 {
-      font-size: 0.6875rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ink3);
-      font-weight: 400;
-      white-space: nowrap;
-    }
-
-    .section-head::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
-
-    .section-intro { font-size: 0.8125rem; color: var(--ink2); max-width: 480px; margin: -4px 0 20px; }
-
+    .section-head { padding: 56px 0 16px; }
+    .section-intro { color: var(--ink2); max-width: 500px; margin-bottom: 24px; }
 
     /* APPS */
     .apps {
@@ -179,15 +173,17 @@
 
     .app {
       --tint: var(--accent);
+      position: relative;
       background:
-        radial-gradient(110% 90% at 0% 0%, color-mix(in srgb, var(--tint) var(--glow), transparent) 0%, transparent 60%),
-        var(--bg2);
-      border: 1px solid var(--rule);
-      border-radius: 14px;
-      padding: 18px 18px 16px;
+        radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--tint) var(--glow), transparent) 0%, transparent 60%),
+        var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       transition: border-color 0.2s;
     }
 
@@ -201,181 +197,205 @@
     .app-head { display: flex; align-items: center; gap: 14px; }
 
     .app-icon {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       flex-shrink: 0;
       border-radius: 22.5%;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 8px 18px -8px color-mix(in srgb, var(--tint) 70%, #000);
+      box-shadow: 0 0 0 1px var(--line), 0 10px 22px -10px color-mix(in srgb, var(--tint) 80%, #000);
       display: block;
     }
 
     .app-name {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.125rem;
-      letter-spacing: -0.02em;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
       color: var(--ink);
-      line-height: 1.15;
+      line-height: 1.25;
       text-decoration: none;
     }
 
-    a.app-name { border-bottom: 1px solid transparent; transition: border-color 0.15s; }
-    a.app-name::after { content: ' ↗'; font-family: var(--mono); font-weight: 400; font-size: 0.75rem; color: var(--ink3); }
+    a.app-name::after { content: ' ↗'; font-weight: 400; font-size: 0.8125rem; color: var(--ink3); transition: color 0.15s; }
 
-    .app-sub { font-size: 0.75rem; color: var(--ink3); line-height: 1.4; margin-top: 2px; }
+    .app-sub { font-size: 0.8125rem; color: var(--ink3); line-height: 1.4; margin-top: 2px; }
 
     /* itch / fix / skipped: the short version of why each app exists */
     .why {
       display: grid;
-      grid-template-columns: 4.5em minmax(0, 1fr);
-      gap: 6px 8px;
-      font-size: 0.75rem;
-      line-height: 1.6;
+      grid-template-columns: 4.75rem minmax(0, 1fr);
+      gap: 8px 10px;
+      font-size: 0.875rem;
+      line-height: 1.5;
     }
-
-    .why dt { color: var(--ink3); }
+    .why dt {
+      font-family: var(--mono);
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      padding-top: 0.3em;
+    }
     .why dd { color: var(--ink2); }
-    .why dt.itch { color: var(--accent-text); }
-    .why dd.itch { color: var(--ink); }
+    .why dt.itch { color: var(--accent); }
+    .why dd.itch { color: var(--ink); font-weight: 500; }
+    .why dd.skip { color: var(--ink3); }
 
     /* where to get it, for the apps that are out */
     .app-get {
       margin-top: auto;
-      padding-top: 10px;
-      border-top: 1px dashed var(--rule);
-      font-size: 0.75rem;
-      color: var(--ink3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-size: 0.8125rem;
+      color: var(--ink2);
       text-decoration: none;
       transition: color 0.15s;
     }
+
+    .app-get .arrow { color: var(--ink3); transition: color 0.15s, transform 0.2s; }
+
+    /* live / wip: a small dot and a word */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.8125rem;
+      color: var(--ink3);
+      white-space: nowrap;
+    }
+    .status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+    }
+    .status.live { color: var(--ink2); }
+    .status.live::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
 
     /* TOOLS */
     .tools {
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--rule);
-      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
     .tool-card {
-      background: var(--bg2);
-      padding: 16px 20px;
+      padding: 18px 20px;
       display: grid;
       grid-template-columns: auto 1fr auto;
-      gap: 4px 10px;
+      align-items: center;
+      gap: 4px 12px;
       text-decoration: none;
       color: inherit;
       position: relative;
-      transition: background 0.12s;
+      transition: background 0.15s;
     }
 
-    .tool-card:not(:last-child) { border-bottom: 1px solid var(--rule); }
+    .tool-card:not(:last-child) { border-bottom: 1px solid var(--line); }
 
     .tool-name {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1rem;
-      letter-spacing: -0.02em;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      letter-spacing: -0.01em;
       color: var(--ink);
       text-decoration: none;
     }
 
-    .tool-arrow { color: var(--ink3); transition: color 0.12s, transform 0.15s; }
+    .tool-card .status { font-size: 0.75rem; }
 
-    .tool-desc { grid-column: 1 / -1; font-size: 0.8125rem; color: var(--ink2); line-height: 1.65; }
+    .tool-arrow { color: var(--ink3); transition: color 0.15s, transform 0.2s; }
+
+    .tool-desc { grid-column: 1 / -1; font-size: 0.875rem; color: var(--ink2); line-height: 1.55; }
 
     .tool-desc a {
       position: relative;
       z-index: 1;
-      color: var(--accent-text);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s;
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--line2);
+      text-underline-offset: 3px;
+      transition: text-decoration-color 0.15s;
     }
-
-    /* live / wip, a quiet marker next to the name */
-    .status {
-      align-self: center;
-      font-size: 0.6875rem;
-      letter-spacing: 0.06em;
-      color: var(--ink3);
-      white-space: nowrap;
-    }
-    .status::before { content: '○ '; }
-    .status.live { color: var(--accent-text); }
-    .status.live::before { content: '● '; }
 
     .tool-name.stretched::after { content: ''; position: absolute; inset: 0; }
     .tool-name.stretched:focus-visible { outline: none; }
-    .tool-card:has(.stretched:focus-visible) { outline: 2px solid var(--accent-text); outline-offset: -2px; }
+    .tool-card:has(.stretched:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
     a.tool-card:focus-visible { outline-offset: -2px; }
 
     /* ABOUT */
     .about-quote {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(1.375rem, 4.4vw, 1.875rem);
-      line-height: 1.15;
-      letter-spacing: -0.03em;
+      font-size: clamp(1.5rem, 4.6vw, 2.125rem);
+      line-height: 1.1;
+      letter-spacing: -0.035em;
       color: var(--ink);
-      max-width: 520px;
-      margin-bottom: 20px;
+      max-width: 540px;
+      margin-bottom: 24px;
     }
 
-    .about-quote em { font-style: normal; color: var(--accent-display); }
+    .about-quote em { font-style: normal; color: var(--accent); }
 
-    .about-text { color: var(--ink2); line-height: 1.85; max-width: 520px; }
+    .about-text { color: var(--ink2); max-width: 520px; }
     .about-text + .about-text { margin-top: 14px; }
 
     .about-text a {
-      color: var(--accent-text);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s;
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--line2);
+      text-underline-offset: 3px;
+      transition: text-decoration-color 0.15s;
     }
 
     /* FOOTER */
     footer {
-      margin-top: 56px;
-      border-top: 1px solid var(--rule);
+      margin-top: 80px;
+      border-top: 1px solid var(--line);
       padding: 24px 0 48px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
+      font-size: 0.8125rem;
     }
 
-    .footer-note { font-size: 0.75rem; color: var(--ink3); }
-    .footer-note span { color: var(--accent-text); }
+    .footer-note { color: var(--ink3); }
+    .footer-note span { color: var(--ink2); }
 
     .contact-link {
-      font-size: 0.75rem;
-      color: var(--ink3);
-      text-decoration: none;
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 1px;
-      transition: color 0.15s, border-color 0.15s;
+      color: var(--ink2);
+      text-decoration: underline;
+      text-decoration-color: var(--line2);
+      text-underline-offset: 3px;
+      transition: color 0.15s, text-decoration-color 0.15s;
     }
 
     /* INTERACTION: press feedback is instant, hover only where hover exists */
     @media (hover: hover) {
-      .nav-links a:hover { color: var(--accent-text); }
-      a.app-name:hover { border-color: var(--accent-text); }
-      .app-get:hover, .app-get:hover .status { color: var(--accent-text); }
-      .app:hover { border-color: color-mix(in srgb, var(--tint) 45%, var(--rule)); }
-      a.tool-card:hover, .tool-card:has(.stretched):hover { background: var(--bg); }
-      a.tool-card:hover .tool-arrow, .tool-card:has(.stretched):hover .tool-arrow { color: var(--accent-text); transform: translate(2px, -2px); }
-      .tool-desc a:hover, .about-text a:hover { border-color: var(--accent-text); }
-      .contact-link:hover { color: var(--accent-text); border-color: var(--accent-text); }
+      .nav-links a:hover { color: var(--ink); background: var(--raise); }
+      a.app-name:hover::after { color: var(--accent); }
+      .app:hover { border-color: color-mix(in srgb, var(--tint) 35%, var(--line2)); }
+      .app-get:hover { color: var(--ink); }
+      .app-get:hover .arrow { color: var(--accent); transform: translate(2px, -2px); }
+      a.tool-card:hover, .tool-card:has(.stretched):hover { background: var(--raise); }
+      a.tool-card:hover .tool-arrow, .tool-card:has(.stretched):hover .tool-arrow { color: var(--accent); transform: translate(2px, -2px); }
+      .tool-desc a:hover, .about-text a:hover, .contact-link:hover { text-decoration-color: var(--accent); }
+      .contact-link:hover { color: var(--ink); }
     }
-    a.tool-card:active, .tool-card:has(.stretched):active { background: var(--tag-bg); transition-duration: 0s; }
+    a.tool-card:active, .tool-card:has(.stretched):active { background: var(--raise); transition-duration: 0s; }
 
     /* cards rise in as they scroll into view, where the browser supports it */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
-        .app, .tool-card {
+        .app, .tools {
           animation: rise linear both;
           animation-timeline: view();
           animation-range: entry 0% entry 35%;
@@ -385,14 +405,14 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .tool-card:hover .tool-arrow { transform: none; }
+      .tool-card:hover .tool-arrow, .app-get:hover .arrow { transform: none; }
     }
 
     /* narrow phones: shrink the nav so the links fit next to the name */
     @media (max-width: 440px) {
       .site-name { font-size: 0.875rem; }
-      .nav-links { gap: 10px; }
-      .nav-links a { font-size: 0.6875rem; letter-spacing: 0.04em; }
+      .nav-links { gap: 0; margin-right: -5px; }
+      .nav-links a { padding: 6px 5px; font-size: 0.8125rem; }
     }
 
     /* the hero sits right under the nav, so the tiniest phones can do without the links */
@@ -402,8 +422,10 @@
 
     @media (max-width: 600px) {
       .apps { grid-template-columns: 1fr; }
-      .hero { padding: 44px 0 40px; }
-      .tool-card { padding: 14px 16px; }
+      .hero { padding: 56px 0 40px; }
+      .hero-desc { font-size: 1rem; }
+      .section-head { padding-top: 44px; }
+      .tool-card { padding: 16px; }
     }
   </style>
 </head>
@@ -430,7 +452,7 @@
     </section>
 
     <div id="apps">
-      <div class="section-head"><h2>ios apps</h2></div>
+      <div class="section-head"><h2 class="label">iOS apps</h2></div>
       <p class="section-intro">Small native iPhone apps, built with Claude Code for things that bugged me. Each one starts with the itch.</p>
 
       <div class="apps">
@@ -444,11 +466,11 @@
             </div>
           </div>
           <dl class="why">
-            <dt class="itch">itch</dt><dd class="itch">Scrolling for an episode in the dark, then waking up when it ends.</dd>
-            <dt>fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
-            <dt>skipped</dt><dd>Accounts, queues, discovery. It's a bedtime button.</dd>
+            <dt class="itch">Itch</dt><dd class="itch">Scrolling for an episode in the dark, then waking up when it ends.</dd>
+            <dt>Fix</dt><dd>One tap plays random episodes back to back until the sleep timer fades it out.</dd>
+            <dt>Skipped</dt><dd class="skip">Accounts, queues, discovery. It's a bedtime button.</dd>
           </dl>
-          <a class="app-get" href="https://apps.apple.com/us/app/podnap/id6825713803" target="_blank" rel="noopener"><span class="status live">on the App Store</span> &#8599;</a>
+          <a class="app-get" href="https://apps.apple.com/us/app/podnap/id6825713803" target="_blank" rel="noopener"><span class="status live">On the App Store</span><span class="arrow" aria-hidden="true">&#8599;</span></a>
         </article>
 
         <article class="app" data-app="dense">
@@ -460,11 +482,11 @@
             </div>
           </div>
           <dl class="why">
-            <dt class="itch">itch</dt><dd class="itch">Apple's widgets show three things and a lot of empty space.</dd>
-            <dt>fix</dt><dd>Widgets that fit as much as you can read. Font, size and spacing tuned per widget.</dd>
-            <dt>skipped</dt><dd>The calendar app. The widget is the whole point.</dd>
+            <dt class="itch">Itch</dt><dd class="itch">Apple's widgets show three things and a lot of empty space.</dd>
+            <dt>Fix</dt><dd>Widgets that fit as much as you can read. Font, size and spacing tuned per widget.</dd>
+            <dt>Skipped</dt><dd class="skip">The calendar app. The widget is the whole point.</dd>
           </dl>
-          <a class="app-get" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener"><span class="status">beta on TestFlight</span> &#8599;</a>
+          <a class="app-get" href="https://testflight.apple.com/join/xfXeEPq4" target="_blank" rel="noopener"><span class="status">Beta on TestFlight</span><span class="arrow" aria-hidden="true">&#8599;</span></a>
         </article>
 
         <article class="app" data-app="corkpin">
@@ -476,9 +498,9 @@
             </div>
           </div>
           <dl class="why">
-            <dt class="itch">itch</dt><dd class="itch">Notes scattered across Photos, Notes and texts to myself. Saving is easy, finding isn't.</dd>
-            <dt>fix</dt><dd>One board. Links unfurl, text in screenshots is searchable, the Share sheet drops anything in.</dd>
-            <dt>skipped</dt><dd>A server. It syncs through your own iCloud, web version included.</dd>
+            <dt class="itch">Itch</dt><dd class="itch">Notes scattered across Photos, Notes and texts to myself. Saving is easy, finding isn't.</dd>
+            <dt>Fix</dt><dd>One board. Links unfurl, text in screenshots is searchable, the Share sheet drops anything in.</dd>
+            <dt>Skipped</dt><dd class="skip">A server. It syncs through your own iCloud, web version included.</dd>
           </dl>
         </article>
 
@@ -491,9 +513,9 @@
             </div>
           </div>
           <dl class="why">
-            <dt class="itch">itch</dt><dd class="itch">Flight logs die at data entry. Nobody types in ten years of boarding passes.</dd>
-            <dt>fix</dt><dd>It finds flights in your calendar, booking emails, PDFs and screenshots. You just confirm.</dd>
-            <dt>skipped</dt><dd>Live tracking. Plenty of apps already do that.</dd>
+            <dt class="itch">Itch</dt><dd class="itch">Flight logs die at data entry. Nobody types in ten years of boarding passes.</dd>
+            <dt>Fix</dt><dd>It finds flights in your calendar, booking emails, PDFs and screenshots. You just confirm.</dd>
+            <dt>Skipped</dt><dd class="skip">Live tracking. Plenty of apps already do that.</dd>
           </dl>
         </article>
 
@@ -506,9 +528,9 @@
             </div>
           </div>
           <dl class="why">
-            <dt class="itch">itch</dt><dd class="itch">Miss one day and the streak resets to zero. That's usually when people quit.</dd>
-            <dt>fix</dt><dd>A score where recent days count most. A miss nudges it down, one check-in starts the climb back.</dd>
-            <dt>skipped</dt><dd>The reset. No number to lose, no reason to give up.</dd>
+            <dt class="itch">Itch</dt><dd class="itch">Miss one day and the streak resets to zero. That's usually when people quit.</dd>
+            <dt>Fix</dt><dd>A score where recent days count most. A miss nudges it down, one check-in starts the climb back.</dd>
+            <dt>Skipped</dt><dd class="skip">The reset. No number to lose, no reason to give up.</dd>
           </dl>
         </article>
 
@@ -516,7 +538,7 @@
     </div>
 
     <div id="tools">
-      <div class="section-head"><h2>tools</h2></div>
+      <div class="section-head"><h2 class="label">Tools</h2></div>
 
       <div class="tools">
 
@@ -577,7 +599,7 @@
     </div>
 
     <div id="about">
-      <div class="section-head"><h2>about</h2></div>
+      <div class="section-head"><h2 class="label">About</h2></div>
 
       <p class="about-quote">I have <em>approximate</em> knowledge of many things.</p>
 
