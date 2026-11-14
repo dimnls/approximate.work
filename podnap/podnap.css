@@ -13,7 +13,7 @@
   --accent:  #2FD9BC;
   --tint:    #7B6CF0; /* Podnap's violet, from the icon */
   --glow:    18%;
-  --sans:    'Geist', -apple-system, system-ui, sans-serif;
+  --sans:    'DM Sans', -apple-system, system-ui, sans-serif;
   --mono:    'Geist Mono', ui-monospace, monospace;
   --display: 'Syne', system-ui, sans-serif;
 }
